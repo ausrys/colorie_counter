@@ -1,0 +1,9 @@
+#root {
+  max-width: auto;
+  margin: auto;
+  text-align: center;
+  width: 100%;
+}
+.App {
+  height: 100dvh;
+}
