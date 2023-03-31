@@ -1,4 +1,4 @@
-import { MealInfoType, MealProducts } from "../../types/productTypes";
+import { MealInfoType, MealProducts, PortionProducts } from "../../types/productTypes";
 import MealProductsList from "./MealProductsList";
 
 type Props = {}
@@ -6,6 +6,12 @@ type Props = {}
 const MealInfo = (props: any) => {
     const {createdAt, title,  Products, isPortion, ...rest} = props.data;
     const mealInfo : MealInfoType = {...rest};
+    const destructedMealProds = Products.map((prod: PortionProducts) =>{
+      return {
+          ...prod.MealProducts,
+          ...prod
+      }
+    })
   return (
     <div>
         <h1>{title}</h1>
@@ -13,7 +19,7 @@ const MealInfo = (props: any) => {
                 return <h4 key={mapkey}>{key}: {value}</h4>
             })}
             </div>
-            <MealProductsList products = {Products}/>
+            <MealProductsList products = {destructedMealProds}/>
         </div>
   )
 }

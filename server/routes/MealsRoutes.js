@@ -5,8 +5,6 @@ const mealsController = require('../controllers/mealsController')
 router.get('/meals', mealsController.all_meals_get);
 // Create meal
 router.post('/meals/meal/create', mealsController.create_meal_post);
-// Create full meal
-router.post('/meals/meal', mealsController.create_meal_with_prods_post);
 // Update
 router.put('/meals/meal', mealsController.update_meal_post)
 // Update only with portion

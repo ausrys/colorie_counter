@@ -5,46 +5,30 @@ import { useParams } from "react-router-dom"
 import Product from "../components/Product/Product";
 import { returnEditedObject, returnMealInfoWithPortion } from "../helper/functions";
 import { useFetchData } from "../hooks/axiosHooks"
+import { MealType } from "../types/enums";
 import { ProductType, ProductWithWeightType, MealInfoType } from "../types/productTypes";
 
 type Props = {}
 
 const Meal = (props: Props) => {
     const productWeight = useRef<HTMLInputElement>(null);
-    const mealPortion = useRef<HTMLInputElement>(null);
-    const [portion, setPortion] = useState(1);
-    const [isMealPortioned, setIsMealPortioned] = useState<boolean>(false);
-    const {meal_id} = useParams();
-    const {data, isLoading, error} = useFetchData('meal', `/meals/meal/create/${meal_id}`);
+    let isPortion = 0;
+    const [selectedMealType, setSelectedMealType] = useState(MealType.Breakfast);
     const [mealProducts, setMealProduct] = useState<ProductWithWeightType[]>([]);
     const [product, setProduct] = useState<ProductType | null>(null);
     const [mealInfo, setMealInfo] = useState<MealInfoType>({
         calories: 0,
-        price: 0,
         protein: 0,
         carbs: 0,
         weight: 0
     })
-    useEffect(() =>{
-        setMealInfo(returnMealInfoWithPortion(mealInfo, portion))
-        const newMealProds = mealProducts.map((prod: ProductWithWeightType) => {
-            return {
-                ...prod,
-                calories: prod.calories * portion,
-                price: prod.price * portion,
-                protein: prod.protein * portion,
-                carbs: prod.carbs * portion,
-                weight: prod.weight * portion,
-            }
-        })
-        setMealProduct(newMealProds)
-
-    }, [portion])
+    const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedMealType(event.target.value as MealType);
+      };
     const deleteProduct = (product: ProductWithWeightType) => {
         setMealProduct(mealProducts.filter((prod: ProductWithWeightType) => prod.title!== product.title));
         setMealInfo({
             calories: mealInfo.calories - product.calories,
-            price: mealInfo.price - product.price,
             protein: mealInfo.protein - product.protein,
             carbs: mealInfo.carbs - product.carbs,
             weight: mealInfo.weight - product.weight,
@@ -58,7 +42,6 @@ const Meal = (props: Props) => {
             const newMealProcuts = mealProducts.filter((prod) => prod.product_id !== newObject.product_id)
             existingObj.calories += newObject.calories
             existingObj.carbs += newObject.carbs
-            existingObj.price += newObject.price
             existingObj.protein += newObject.protein
             existingObj.weight += newObject.weight
             setMealProduct([...newMealProcuts, existingObj]);
@@ -66,7 +49,6 @@ const Meal = (props: Props) => {
         else setMealProduct([...mealProducts, newObject]);
         setMealInfo({
             calories: mealInfo.calories + newObject.calories,
-            price: mealInfo.price + newObject.price,
             protein: mealInfo.protein + newObject.protein,
             carbs: mealInfo.carbs + newObject.carbs,
             weight: mealInfo.weight + newObject.weight,
@@ -74,47 +56,27 @@ const Meal = (props: Props) => {
         setProduct(null);
     }
         const postMealWithProducts = useMutation({
-            mutationFn: (fullMeal: ProductWithWeightType[]) => {
-              return axios.post('http://localhost:5000/meals/meal', [fullMeal, meal_id])
+            mutationFn: (fullMeal: any) => {
+              return axios.post('http://localhost:5000/meals/meal/create', fullMeal )
             },
           });
-        const updateMealValues = useMutation({
-            mutationFn: (mealInfo: MealInfoType) => {
-              return axios.put('http://localhost:5000/meals/meal', {...mealInfo, meal_id: Number(meal_id)})
-            },
-        })
         const handleSaveMeal = () => {
-            postMealWithProducts.mutate(mealProducts)
-            updateMealValues.mutate(mealInfo)
+            postMealWithProducts.mutate({...mealInfo,  prods: mealProducts , title: selectedMealType, isPortion: isPortion,})
         }
-        const updateValuesWithPortion = () =>{
-            setPortion(Number(mealPortion.current?.value) / mealInfo.weight);
-        }
-    if(!data) {
-        return (
-            <>
-                <h1>Meal doesn't exist</h1>
-            </>
-        )
-    }
     return (
         <div>
-            <h1>{data.title}</h1>
+        <h1>{selectedMealType}</h1>
             <div style={{textAlign: "left", margin: 25}}>
+                <label style={{width: "25%", margin: 10}} htmlFor="meal-type-select">Select a meal type:</label>
+                <select style={{width: "25%", margin: 10}} id="meal-type-select" value={selectedMealType} onChange={handleSelectChange}>
+                {Object.keys(MealType).map((key) => (
+                    <option key={key} value={key}>
+                    {key}
+                    </option>
+                ))}
+                 </select>
+                 <button onClick={() => isPortion = 1}>Full Portion</button>
                 <h3>Meal info: </h3>
-                <h2>Portion eaten: {(portion).toPrecision(3)} </h2>
-                {
-                    isMealPortioned && mealProducts.length > 0 ? (
-                        <>
-                            <input ref={mealPortion} type="number" name="" id="" />
-                            <button onClick={() => updateValuesWithPortion()}>Set portion</button>
-                        </>
-                    ) :
-                    (
-                        <button onClick={() => setIsMealPortioned(true)}>Portion the meal</button>
-                    )
-                }
-
                 <div>
                 {Object.entries(mealInfo).map(([key, value], mapkey) => {
                     return <h4 key={mapkey}>{key}: {parseFloat(value.toPrecision(3))}</h4>

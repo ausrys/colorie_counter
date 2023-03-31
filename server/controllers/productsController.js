@@ -1,9 +1,9 @@
 const {Products} = require('../models')
 module.exports.add_product_post = async (req, res) => {
     try {
-        const {product_id, title, calories, protein, carbs, price} = req.body;
+        const {product_id, title, calories, protein, carbs, category} = req.body;
         await Products.create({
-            product_id: product_id, title: title, calories: calories, protein: protein, carbs: carbs, price: price
+            product_id: product_id, title: title, calories: calories, protein: protein, carbs: carbs, category: category
         })
         res.status(201).json('Product added successfuly')
     } catch (error) {

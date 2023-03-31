@@ -13,9 +13,15 @@ const Meal = (props: Props) => {
     return (
     <div>
       <MealInfo data = {data}/>
-      <button onClick={() => {
-        navigate(`/meals/meal/portion/${meal_id}`)
-      }}>Portion the meal</button>
+      {
+        data?.isPortion === false ? (
+          <button onClick={() => {
+            navigate(`/meals/meal/portion/${meal_id}`)
+          }}>Portion the meal</button>
+        ):
+        null
+      }
+      
     </div>
   )
 }

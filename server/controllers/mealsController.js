@@ -2,44 +2,21 @@ const {Meals, MealProducts, Products, sequelize} = require('../models')
 const { Op} = require('sequelize')
 // Create a meal
 module.exports.create_meal_post = async (req, res) => {
-    const {MealProducts, title, isPortioned, ...rest} = req.body;
-    const newArray = MealProducts.map((obj) => {
-        return {}
-    })
+    const {prods, ...rest} = req.body;
     try {
         const result = await sequelize.transaction(async (t) => {
-            const meal = await Meals.create(...rest, {transaction: t});
+            const meal = await Meals.create({...rest}, {transaction: t});
             const meal_id = meal.meal_id;
-            await MealProducts.bulkcreate([MealProducts], {transaction: t})
+            const products = prods.map((obj) => {
+                return { meal_id: meal_id, product_id: obj.product_id, ...obj }
+            })
+            await MealProducts.bulkCreate(products, {transaction: t})
             return meal
         })
         res.status(201).send(result)
     } catch (error) {
         console.log(error)
         res.status(400).json(error)
-    }
-    // try {
-    //     const Meal = await Meals.create({title: title});
-    //     res.status(201).json(Meal.dataValues);
-    // } catch (error) {
-    //     console.log(error)
-    //     res.status(400).json('Error')
-    // }
-}
-// Post a meal with products
-module.exports.create_meal_with_prods_post = async (req, res) => {
-    const meals = req.body;
-    const newArray = meals[0].map((obj) => {
-        const {title, ...rest} = obj;
-        return {...rest, meal_id: Number(meals[1])}
-    })
-    
-    try {
-        const result = await MealProducts.bulkCreate(newArray);
-        res.status(201);
-    } catch (error) {
-        console.log(error)
-        res.status(400).json('Error')
     }
 }
 // Post a meal info
@@ -80,7 +57,7 @@ module.exports.meal_page_get = async (req, res) => {
                     model: Products,
                     attributes: ['title',  'product_id'],
                     through: {
-                        attributes: ['calories', 'protein', 'carbs', 'price', 'weight']
+                        attributes: ['calories', 'protein', 'carbs', 'weight']
                     }
                 }
             ]

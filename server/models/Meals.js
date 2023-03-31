@@ -15,28 +15,32 @@ module.exports = (sequelize, DataTypes) => {
         },
         calories : {
             type: DataTypes.FLOAT,
-            allowNull: true,
+            allowNull: false,
         },
         protein : {
             type: DataTypes.FLOAT,
-            allowNull: true,
+            allowNull: false,
         },
         carbs : {
             type: DataTypes.FLOAT,
-            allowNull: true,
-        },
-        price : {
-            type: DataTypes.FLOAT,
-            allowNull: true,
+            allowNull: false,
         },
         weight : {
             type: DataTypes.FLOAT,
-            allowNull: true,
+            allowNull: false,
         },
         isPortion: {
             type: DataTypes.BOOLEAN,
-            allowNull: true
+            allowNull: false
         },
+        createdAt: {
+            type: DataTypes.DATE,
+            get() {
+                const currentDate = this.getDataValue('createdAt').toLocaleString();
+                return currentDate
+            }
+        }
+        
     })
     Meals.associate = (models) => {
         Meals.belongsToMany(models.Products, {

@@ -11,9 +11,11 @@ const Meals = (props: Props) => {
     <div>
         {data.map((obj: any, key: any) => {
             return (
-                <div onClick={() => navigate(`/meals/meal/${obj.meal_id}`) } style={{cursor: 'pointer'}} key={key}>
-                    <h3>{obj.title}</h3>
-                    <h4>{obj.createdAt}</h4>
+                <div onClick={() => navigate(`/meals/meal/${obj.meal_id}`) } style={{cursor: 'pointer', display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%",
+                }} key={key}>
+                    <h3 style={{margin: 10}}>{obj.title}</h3>
+                    <h4 style={{margin: 10}} >{obj.createdAt}</h4>
+                    <h3 style={{margin: 10}}>Can be portioned: {obj.isPortion === true ? ("yes"): "no"}</h3>
                 </div>
             )
                 

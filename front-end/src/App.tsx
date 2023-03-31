@@ -22,7 +22,7 @@ function App() {
             <Route path="/products" element={<Products/>} />
             <Route path="/meals" element={<Meals/>} />
             <Route path="/meals/meal/:meal_id" element={<Meal/>} />
-            <Route path="/meals/meal/create/:meal_id" element={<MealCreate/>} />
+            <Route path="/meals/meal/create/" element={<MealCreate/>} />
             <Route path="/meals/meal/portion/:meal_id" element={<Portion/>} />
           </Routes>
         </Router>

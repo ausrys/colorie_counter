@@ -20,7 +20,7 @@ const Portion = (props: Props) => {
     const mealPortion = useRef<HTMLInputElement>(null);
     const productWeight = useRef<HTMLInputElement>(null);
     const [portionInfo, setPortionInfo] = useState<MealInfoType | undefined>();
-    const [portionProds, setPortionProds] = useState<PortionProducts[] | undefined>();
+    const [portionProds, setPortionProds] = useState<ProductWithWeightType[] | undefined>();
     const [product, setProduct] = useState<ProductWithWeightType | null>(null);
     const [portion, setPortion] = useState(1);
     const navigate = useNavigate();
@@ -36,12 +36,17 @@ const Portion = (props: Props) => {
         if (data) {
           setPortionInfo({
             calories: data.calories,
-            price: data.price,
             protein: data.protein,
             carbs: data.carbs,
             weight: data.weight
           });
-          setPortionProds(data.Products);
+          const destructedMealProds = data.Products.map((prod: PortionProducts) =>{
+            return {
+                ...prod.MealProducts,
+                ...prod
+            }
+          })
+          setPortionProds(destructedMealProds);
         }
       }, [data]);
     useEffect(() =>{
@@ -50,11 +55,10 @@ const Portion = (props: Props) => {
                 return {
                     ...prod,
                     MealProducts: {
-                        calories: prod.MealProducts.calories * portion,
-                        price: prod.MealProducts.price * portion,
-                        protein: prod.MealProducts.protein * portion,
-                        carbs: prod.MealProducts.carbs * portion,
-                        weight: prod.MealProducts.weight * portion,
+                        calories: prod.calories * portion,
+                        protein: prod.protein * portion,
+                        carbs: prod.carbs * portion,
+                        weight: prod.weight * portion,
                     },
                     
                 }
@@ -62,7 +66,6 @@ const Portion = (props: Props) => {
             setPortionProds(newPortionProdsArray)
             setPortionInfo({
                 calories: portionInfo.calories * portion,
-                price: portionInfo.price * portion,
                 protein: portionInfo.protein * portion,
                 carbs: portionInfo.carbs * portion,
                 weight: portionInfo.weight * portion
@@ -93,11 +96,10 @@ const Portion = (props: Props) => {
             const addedObject = {
                 ...existingObj,
                 MealProducts: {
-                    calories: existingObj.MealProducts.calories + newObject.calories,
-                    price: existingObj.MealProducts.price + newObject.price,
-                    carbs: existingObj.MealProducts.carbs + newObject.carbs,
-                    protein: existingObj.MealProducts.protein + newObject.protein,
-                    weight: existingObj.MealProducts.weight + newObject.weight,
+                    calories: existingObj.calories + newObject.calories,
+                    carbs: existingObj.carbs + newObject.carbs,
+                    protein: existingObj.protein + newObject.protein,
+                    weight: existingObj.weight + newObject.weight,
                 }
             }
             setPortionProds([...newMealProcuts, addedObject]);
@@ -105,17 +107,14 @@ const Portion = (props: Props) => {
         else setPortionProds([...portionProds, {
             title: newObject.title,
             product_id: newObject.product_id,
-            MealProducts: {
-                calories:  newObject.calories,
-                    price: newObject.price,
-                    carbs: newObject.carbs,
-                    protein: newObject.protein,
-                    weight: newObject.weight,
+            calories:  newObject.calories,
+            carbs: newObject.carbs,
+            protein: newObject.protein,
+            weight: newObject.weight,
             }
-        }]);
+        ]);
         setPortionInfo({
             calories: portionInfo.calories + newObject.calories,
-            price: portionInfo.price + newObject.price,
             protein: portionInfo.protein + newObject.protein,
             carbs: portionInfo.carbs + newObject.carbs,
             weight: portionInfo.weight + newObject.weight,
@@ -156,7 +155,7 @@ const Portion = (props: Props) => {
                     {Object.keys(MealType).map((key) => (
                     <option key={key} value={key}>
                     {key}
-          </option>
+                    </option>
         ))}
                 </select>
                 {
@@ -204,7 +203,7 @@ const Portion = (props: Props) => {
             </div>
             {portion !==1 ? (
                 <div>
-                <button onClick={() => mutation.mutate({...portionInfo,  MealProducts: portionProds, title: selectedMealType, isPortion: 1})}>Save the meal</button>
+                <button onClick={() => mutation.mutate({...portionInfo,  prods: portionProds , title: selectedMealType, isPortion: 1})}>Save the meal</button>
             </div>
             ): 
             null}

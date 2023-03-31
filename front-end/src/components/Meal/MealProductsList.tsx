@@ -1,16 +1,17 @@
-import { MealProducts } from "../../types/productTypes";
+import { MealProducts,ProductWithWeightType
+  } from "../../types/productTypes";
 
 type Props = {}
 const MealProductsList = (props: any) => {
   return (
     <div style={{display: "flex", flexDirection: "row"}}>
-            {props.products.map((product: MealProducts, key: any) => (
+            {props.products.map((product: ProductWithWeightType, key: any) => (
                         <div key={key} style={{margin: 10, display: "flex", flexDirection: "column", textAlign: 'left'}}>
                         <span> Title: {product.title}</span>
-                        <span> Carbs: {product.MealProducts.carbs}</span>
-                        <span> Calories: {product.MealProducts.calories}</span>
-                        <span> Protein: {product.MealProducts.protein}</span>
-                        <span> Weight: {product.MealProducts.weight}</span>
+                        <span> Carbs: {product?.carbs.toPrecision(3)}</span>
+                        <span> Calories: {product?.calories.toPrecision(3)}</span>
+                        <span> Protein: {product?.protein.toPrecision(3)}</span>
+                        <span> Weight: {product?.weight.toPrecision(3)}</span>
                         </div>
                     ))}
     </div>
