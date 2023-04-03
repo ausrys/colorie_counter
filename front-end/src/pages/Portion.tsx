@@ -54,12 +54,10 @@ const Portion = (props: Props) => {
             const newPortionProdsArray = portionProds.map((prod) => {
                 return {
                     ...prod,
-                    MealProducts: {
-                        calories: prod.calories * portion,
-                        protein: prod.protein * portion,
-                        carbs: prod.carbs * portion,
-                        weight: prod.weight * portion,
-                    },
+                    calories: prod.calories * portion,
+                    protein: prod.protein * portion,
+                    carbs: prod.carbs * portion,
+                    weight: prod.weight * portion,
                     
                 }
             })
@@ -95,12 +93,10 @@ const Portion = (props: Props) => {
             const newMealProcuts = portionProds.filter((prod) => prod.product_id !== product.product_id)
             const addedObject = {
                 ...existingObj,
-                MealProducts: {
                     calories: existingObj.calories + newObject.calories,
                     carbs: existingObj.carbs + newObject.carbs,
                     protein: existingObj.protein + newObject.protein,
                     weight: existingObj.weight + newObject.weight,
-                }
             }
             setPortionProds([...newMealProcuts, addedObject]);
         }

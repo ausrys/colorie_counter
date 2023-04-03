@@ -15,7 +15,7 @@ const Meals = (props: Props) => {
                 }} key={key}>
                     <h3 style={{margin: 10}}>{obj.title}</h3>
                     <h4 style={{margin: 10}} >{obj.createdAt}</h4>
-                    <h3 style={{margin: 10}}>Can be portioned: {obj.isPortion === true ? ("yes"): "no"}</h3>
+                    <h3 style={{margin: 10}}>Can be portioned: {obj.isPortion === true ? ("no"): "yes"}</h3>
                 </div>
             )
                 

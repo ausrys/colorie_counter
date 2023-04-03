@@ -12,7 +12,7 @@ type Props = {}
 
 const Meal = (props: Props) => {
     const productWeight = useRef<HTMLInputElement>(null);
-    let isPortion = 0;
+    const [isPortion, setIsPortion] = useState(0)
     const [selectedMealType, setSelectedMealType] = useState(MealType.Breakfast);
     const [mealProducts, setMealProduct] = useState<ProductWithWeightType[]>([]);
     const [product, setProduct] = useState<ProductType | null>(null);
@@ -61,7 +61,8 @@ const Meal = (props: Props) => {
             },
           });
         const handleSaveMeal = () => {
-            postMealWithProducts.mutate({...mealInfo,  prods: mealProducts , title: selectedMealType, isPortion: isPortion,})
+            postMealWithProducts.mutate({...mealInfo,  prods: mealProducts , title: selectedMealType, isPortion: isPortion})
+            console.log(isPortion)
         }
     return (
         <div>
@@ -75,7 +76,7 @@ const Meal = (props: Props) => {
                     </option>
                 ))}
                  </select>
-                 <button onClick={() => isPortion = 1}>Full Portion</button>
+                 <button onClick={() => setIsPortion(1)}>Full Portion</button>
                 <h3>Meal info: </h3>
                 <div>
                 {Object.entries(mealInfo).map(([key, value], mapkey) => {
