@@ -22,10 +22,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             allowNull: false,
         },
-        category : {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
         picture_path: {
             type: DataTypes.STRING,
             allowNull: true

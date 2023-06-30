@@ -1,124 +1,108 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { useState, useRef, useEffect } from "react";
-import { useParams } from "react-router-dom"
-import Product from "../components/Product/Product";
-import { returnEditedObject, returnMealInfoWithPortion } from "../helper/functions";
-import { useFetchData } from "../hooks/axiosHooks"
+import { useState } from "react";
 import { MealType } from "../types/enums";
-import { ProductType, ProductWithWeightType, MealInfoType } from "../types/productTypes";
+import { useSelector, useDispatch } from "react-redux";
+import { resetMealInfo } from "../reducers/mealReducers/mealInfoReducer";
+import ReusableModal from "../components/Modal/ReusableModal";
+import FoodCategories from "../components/Product/FoodCategories";
+import Product from "../components/Product/Product";
+import {
+  closeSearchModal,
+  openCatModal,
+} from "../reducers/modalReducers/modalReducers";
+import MealProductsList from "../components/Meal/MealProductsList";
+import MealCreateButtonsSection from "../components/Meal/MealCreateButtonsSection";
+import MealInfo from "../components/Meal/MealInfo";
+import Button from "../components/Reusable Components/Button";
+import SearchProduct from "../components/Product/SearchProduct";
+import MealTypeSelect from "../components/Meal/MealTypeSelect";
 
-type Props = {}
+type Props = {};
 
 const Meal = (props: Props) => {
-    const productWeight = useRef<HTMLInputElement>(null);
-    const [isPortion, setIsPortion] = useState(0)
-    const [selectedMealType, setSelectedMealType] = useState(MealType.Breakfast);
-    const [mealProducts, setMealProduct] = useState<ProductWithWeightType[]>([]);
-    const [product, setProduct] = useState<ProductType | null>(null);
-    const [mealInfo, setMealInfo] = useState<MealInfoType>({
-        calories: 0,
-        protein: 0,
-        carbs: 0,
-        weight: 0
-    })
-    const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedMealType(event.target.value as MealType);
-      };
-    const deleteProduct = (product: ProductWithWeightType) => {
-        setMealProduct(mealProducts.filter((prod: ProductWithWeightType) => prod.title!== product.title));
-        setMealInfo({
-            calories: mealInfo.calories - product.calories,
-            protein: mealInfo.protein - product.protein,
-            carbs: mealInfo.carbs - product.carbs,
-            weight: mealInfo.weight - product.weight,
-        })
-    }
-    const handleButtonClick = (product: ProductType) => {
-        const inputValue = productWeight.current?.value ?? 0;
-        const newObject = returnEditedObject(product, Number(inputValue));
-        const existingObj = mealProducts.find(obj => obj.product_id ===newObject.product_id)
-        if(existingObj) {
-            const newMealProcuts = mealProducts.filter((prod) => prod.product_id !== newObject.product_id)
-            existingObj.calories += newObject.calories
-            existingObj.carbs += newObject.carbs
-            existingObj.protein += newObject.protein
-            existingObj.weight += newObject.weight
-            setMealProduct([...newMealProcuts, existingObj]);
-        }
-        else setMealProduct([...mealProducts, newObject]);
-        setMealInfo({
-            calories: mealInfo.calories + newObject.calories,
-            protein: mealInfo.protein + newObject.protein,
-            carbs: mealInfo.carbs + newObject.carbs,
-            weight: mealInfo.weight + newObject.weight,
-        })
-        setProduct(null);
-    }
-        const postMealWithProducts = useMutation({
-            mutationFn: (fullMeal: any) => {
-              return axios.post('http://localhost:5000/meals/meal/create', fullMeal )
-            },
-          });
-        const handleSaveMeal = () => {
-            postMealWithProducts.mutate({...mealInfo,  prods: mealProducts , title: selectedMealType, isPortion: isPortion})
-            console.log(isPortion)
-        }
-    return (
-        <div>
-        <h1>{selectedMealType}</h1>
-            <div style={{textAlign: "left", margin: 25}}>
-                <label style={{width: "25%", margin: 10}} htmlFor="meal-type-select">Select a meal type:</label>
-                <select style={{width: "25%", margin: 10}} id="meal-type-select" value={selectedMealType} onChange={handleSelectChange}>
-                {Object.keys(MealType).map((key) => (
-                    <option key={key} value={key}>
-                    {key}
-                    </option>
-                ))}
-                 </select>
-                 <button onClick={() => setIsPortion(1)}>Full Portion</button>
-                <h3>Meal info: </h3>
-                <div>
-                {Object.entries(mealInfo).map(([key, value], mapkey) => {
-                    return <h4 key={mapkey}>{key}: {parseFloat(value.toPrecision(3))}</h4>
-                })}
-                </div>
-                {mealProducts.length > 0 ? (
-                    <button onClick={() => handleSaveMeal()}>Save the meal</button>
-                ):
-                null}
-            
-            </div>
-            <h3>Added Products:</h3>
-            <div style={{display: "flex", flexDirection: "row"}}>
-                {mealProducts.map((product: ProductWithWeightType, key) => (
-                    <div key={key} style={{margin: 5, display: "flex", flexDirection: "column"}}>
-                    <span> Title: {product.title}</span>
-                    <span> Carbs: {parseFloat(product.carbs.toPrecision(3))}</span>
-                    <span> Calories: {parseFloat(product.calories.toPrecision(3))}</span>
-                    <span> Protein: {parseFloat(product.protein.toPrecision(3))}</span>
-                    <span> Weight: {parseFloat(product.weight.toPrecision(3))}</span>
-                    <button style={{margin: "5 10"}} onClick={()=> deleteProduct(product)}>Remove</button>
-                    </div>
-                ))}
-            </div>
-            {product ? ( 
-                    <div>
-                {product?.title}
-                <input min={1} placeholder="type weight in grams" type="number"  ref = {productWeight}/>
-                <button onClick={() => handleButtonClick(product)}
-                >
-                    Add to meal
-                </button>
-            </div>
-                ) : null
-                
-            }
-            <h2>Add Product to the meal: </h2>
-            <Product prodList = {mealProducts} setProduct = {setProduct}/>
-        </div>
-    )
+  const [category_name, setCategory_name] = useState(null);
+  const [category_id, setCategory_id] = useState(null);
+  const mealInfo = useSelector((state: any) => state.mealInfo.mealInfo);
+  const [isPortion, setIsPortion] = useState(0);
+  const [selectedMealType, setSelectedMealType] = useState(MealType.Breakfast);
+  const mealProducts = useSelector((state: any) => state.mealInfo.mealProducts);
+  const { categoriesModal, productsModal, searchModal } = useSelector(
+    (state: any) => state.modal
+  );
+  const dispatch = useDispatch();
+  // Get meal type
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedMealType(event.target.value as MealType);
+  };
+  const postMealWithProducts = useMutation({
+    mutationFn: (fullMeal: any) => {
+      return axios.post("http://localhost:5000/meals/meal/create", fullMeal);
+    },
+  });
+  const handleSaveMeal = () => {
+    postMealWithProducts.mutate({
+      ...mealInfo,
+      prods: mealProducts,
+      title: selectedMealType,
+      isPortion: isPortion,
+    });
+    dispatch(resetMealInfo());
+  };
+  return (
+    <div className="">
+      <h1>{selectedMealType}</h1>
+      <MealTypeSelect
+        selectedMealType={selectedMealType}
+        handleSelectChange={handleSelectChange}
+      />
+      <div className="flex h-72">
+        <MealInfo mealInfo={mealInfo} prodsInfoLength={mealProducts.length} />
+        {/* Buttons section */}
+        <MealCreateButtonsSection
+          isPortion={isPortion}
+          setIsPortion={setIsPortion}
+          handleSaveMeal={handleSaveMeal}
+        />
+      </div>
+      <MealProductsList
+        isListItemsRemovable={true}
+        prodsInfo={mealProducts}
+        title={"Added products"}
+      />
+      <Button size={"lg"} onClick={() => dispatch(openCatModal())}>
+        Add product
+      </Button>
+      {categoriesModal === true ? (
+        <ReusableModal modalTitle="Food Categories">
+          <FoodCategories
+            setCategory_name={setCategory_name}
+            setCategory_id={setCategory_id}
+          />
+        </ReusableModal>
+      ) : null}
+      {productsModal === true ? (
+        <ReusableModal modalTitle={category_name}>
+          <Product category_id={category_id} />
+        </ReusableModal>
+      ) : null}
+      {searchModal === true ? (
+        <ReusableModal modalTitle="Search">
+          <SearchProduct />
+          <div className="bg-gray-100 px-4 py-3">
+            <Button
+              size="default"
+              onClick={() => {
+                dispatch(closeSearchModal());
+              }}
+            >
+              Close
+            </Button>
+          </div>
+        </ReusableModal>
+      ) : null}
+    </div>
+  );
+};
 
-}
-
-export default Meal
+export default Meal;

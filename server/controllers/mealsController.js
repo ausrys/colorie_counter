@@ -58,11 +58,19 @@ module.exports.meal_page_get = async (req, res) => {
                     attributes: ['title',  'product_id'],
                     through: {
                         attributes: ['calories', 'protein', 'carbs', 'weight']
-                    }
-                }
-            ]
+                    },
+                },
+
+            ],
         });
-        res.status(200).json(meal[0])
+        const prodsInfo = meal[0].Products.map(product => {
+           const {dataValues} = product.MealProducts
+           const {title, product_id} = product
+
+           return {title, product_id, ...dataValues}
+        })
+        const {title,createdAt, calories,protein, carbs, weight, isPortion } = meal[0]
+        res.status(200).json({title,createdAt, calories,protein, carbs, weight, isPortion, prodsInfo })
     } catch (error) {
         console.log(error)
         res.status(400).json('Error')

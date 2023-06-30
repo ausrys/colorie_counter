@@ -1,21 +1,46 @@
-import { MealProducts,ProductWithWeightType
-  } from "../../types/productTypes";
+import { useDispatch, useSelector } from "react-redux";
+import { MealProducts, ProductWithWeightType } from "../../types/productTypes";
+import { deleteProductFromMeal } from "../../reducers/mealReducers/mealInfoReducer";
+import Button from "../Reusable Components/Button";
 
-type Props = {}
 const MealProductsList = (props: any) => {
+  const dispatch = useDispatch();
   return (
-    <div style={{display: "flex", flexDirection: "row"}}>
-            {props.products.map((product: ProductWithWeightType, key: any) => (
-                        <div key={key} style={{margin: 10, display: "flex", flexDirection: "column", textAlign: 'left'}}>
-                        <span> Title: {product.title}</span>
-                        <span> Carbs: {product?.carbs.toPrecision(3)}</span>
-                        <span> Calories: {product?.calories.toPrecision(3)}</span>
-                        <span> Protein: {product?.protein.toPrecision(3)}</span>
-                        <span> Weight: {product?.weight.toPrecision(3)}</span>
-                        </div>
-                    ))}
+    <div>
+      <h3>{props.title}</h3>
+      <div className="flex flex-row h-48">
+        {props.prodsInfo.length > 0
+          ? props.prodsInfo.map((mealproduct: ProductWithWeightType) => (
+              <div
+                key={mealproduct.product_id}
+                className="flex flex-col m-3 text-left border-2 rounded-md bg-stone-100 border-stone-200/50 h-fit"
+              >
+                {Object.entries(mealproduct).map(([key, value], mapkey) => {
+                  if (key !== "product_id") {
+                    return (
+                      <span className="mx-3 my-1" key={mapkey}>
+                        {key}: {value}
+                      </span>
+                    );
+                  }
+                })}
+                {props.isListItemsRemovable === true ? (
+                  <Button
+                    className="bg-black"
+                    size={"sm"}
+                    onClick={() => {
+                      dispatch(deleteProductFromMeal(mealproduct));
+                    }}
+                  >
+                    Remove
+                  </Button>
+                ) : null}
+              </div>
+            ))
+          : null}
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default MealProductsList
+export default MealProductsList;
