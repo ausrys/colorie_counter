@@ -1,13 +1,14 @@
 import { ReactNode } from "react";
+import { NavLink } from "react-router-dom";
 
-type Props = {
-  children: ReactNode;
-};
-
-const Navbar = (props: Props) => {
+const Navbar = (props: any) => {
   return (
-    <nav className="bg-white text-black font-bold font-sans text-lg shadow-lg fixed w-full relative">
-      <div className="container mx-auto px-4 py-5">{props.children}</div>
+    <nav className="bg-white text-black font-bold font-sans text-lg shadow-lg w-full relative">
+      <div className="container mx-auto px-4 py-5">
+        <NavLink to={"/"}> Home </NavLink>
+        <NavLink to={"/meals"}> Meals</NavLink>
+        <NavLink to={"/statistics"}> Statistics </NavLink>
+      </div>
     </nav>
   );
 };

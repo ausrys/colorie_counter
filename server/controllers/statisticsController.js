@@ -1,0 +1,98 @@
+const { Meals } = require("../models");
+const { Op } = require("sequelize");
+const { DateTime } = require("luxon");
+// Get current week's meals
+module.exports.get_currentWeek_meals = async (req, res) => {
+  const currentDay = DateTime.now();
+  const beginningOfTheCurrentWeek = currentDay.startOf("week");
+  try {
+    const currentWeekMeals = await Meals.findAll({
+      where: {
+        createdAt: {
+          [Op.between]: [beginningOfTheCurrentWeek.toISO(), currentDay.toISO()],
+        },
+        isPortion: 1,
+      },
+    });
+    const weekDaysObject = {
+      Mon: [],
+      Tue: [],
+      Wed: [],
+      Thu: [],
+      Fri: [],
+      Sat: [],
+      Sun: [],
+    };
+    const weekNutrition = {
+      calories: 0,
+      carbs: 0,
+      protein: 0,
+    };
+    // For each meal we get it's weekday and push it to the object, this way we have each meal for a coresponding day, this way it will be easier to represent this data in the front end
+    currentWeekMeals.forEach((element) => {
+      const weekDay = DateTime.fromSQL(element.createdAt, {
+        locale: "en-GB",
+      }).weekdayShort;
+      weekDaysObject[weekDay].push(element);
+      weekNutrition.calories += element.calories;
+      weekNutrition.carbs += element.carbs;
+      weekNutrition.protein += element.protein;
+    });
+    const CaloriesSumForEachWeekDay = {};
+    for (const day in weekDaysObject) {
+      if (weekDaysObject[day].length > 0) {
+        const daysCalories = weekDaysObject[day]
+          .map((object) => {
+            return object.calories;
+          })
+          .reduce((acummulator, cuurentValue) => acummulator + cuurentValue);
+        CaloriesSumForEachWeekDay[day] = daysCalories;
+      } else CaloriesSumForEachWeekDay[day] = 0;
+    }
+    res.status(200).json({ CaloriesSumForEachWeekDay, weekNutrition });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json(error);
+  }
+};
+module.exports.get_test_meals = async (req, res) => {
+  const startDate = req.query.startDate;
+  const endDate = req.query.endDate;
+  if (!startDate && !endDate)
+    return res.status(400).json("No dates were provided");
+  const monthDays = {};
+  try {
+    const mealsByInterval = await Meals.findAll({
+      where: {
+        createdAt: {
+          [Op.between]: [startDate, endDate],
+        },
+        isPortion: 1,
+      },
+    });
+    mealsByInterval.forEach((element) => {
+      const monthDay = DateTime.fromSQL(element.createdAt, {
+        locale: "en-GB",
+      }).day;
+      const monthName = DateTime.fromSQL(element.createdAt, {
+        locale: "en-GB",
+      }).monthShort;
+      if (!monthDays[`${monthName} ${monthDay}`])
+        monthDays[`${monthName} ${monthDay}`] = [];
+      monthDays[`${monthName} ${monthDay}`].push(element);
+    });
+    const CaloriesSumForEachDay = {};
+    for (const day in monthDays) {
+      const daysCalories = monthDays[day]
+        .map((object) => {
+          return object.calories;
+        })
+        .reduce((acummulator, cuurentValue) => acummulator + cuurentValue);
+      CaloriesSumForEachDay[day] = daysCalories;
+    }
+    res.status(200).json(CaloriesSumForEachDay);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json(error);
+  }
+};

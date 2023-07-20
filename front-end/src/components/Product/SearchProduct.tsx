@@ -1,19 +1,16 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Button from "../Reusable Components/Button";
-import { closeSearchModal } from "../../reducers/modalReducers/modalReducers";
 import { useFetchData } from "../../hooks/axiosHooks";
 import { ProductType } from "../../types/productTypes";
 import { setProduct } from "../../reducers/productReducers/productInfoWithWeight";
-const rootAdress = "http://localhost:5000";
+import ProductAddModal from "../Modal/ProductAddModal";
 type Props = {};
-const SearchProduct = (props: Props) => {
+const SearchProduct = () => {
   const searchInput = useSelector((state: any) => state.modal.searchInput);
 
-  const [searchQueryResults, setSearchQueryResults] = useState([]);
   const dispatch = useDispatch();
   const [prodInfoModal, setProdInfoModal] = useState(false);
-  const { data, isLoading, error, isFetched } = useFetchData(
+  const { data, isFetched } = useFetchData(
     ["searchQuery", searchInput],
     `/products/search/${searchInput}`
   );
@@ -40,6 +37,12 @@ const SearchProduct = (props: Props) => {
               </div>
             ))
           : null}
+        {prodInfoModal === true ? (
+          <ProductAddModal
+            prodInfoModal={prodInfoModal}
+            setProdInfoModal={setProdInfoModal}
+          />
+        ) : null}
       </div>
     </>
   );
