@@ -4,26 +4,20 @@
     "password": "Lopinis123",
     "database": "calorieProj",
     "host": "localhost",
-    "dialect": "mysql",
-    "dialectOptions": {
-      "useUTC": false
-    },
-    "timezone": "+03:00"
+    "dialect": "mysql"
   },
   "test": {
     "username": "root",
     "password": "Lopinis123",
     "database": "database_test",
     "host": "127.0.0.1",
-    "dialect": "mysql",
-    "timezone": "+03:00"
+    "dialect": "mysql"
   },
   "production": {
     "username": "root",
     "password": "Lopinis123",
     "database": "database_production",
     "host": "127.0.0.1",
-    "dialect": "mysql",
-    "timezone": "+03:00"
+    "dialect": "mysql"
   }
 }

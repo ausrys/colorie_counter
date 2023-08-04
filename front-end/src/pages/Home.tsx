@@ -1,7 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { MealType } from "../types/enums";
 import Button from "../components/Reusable Components/Button";
 import donut from "../assets/images/donut.png";
 import board from "../assets/images/board knife and carrots.png";
@@ -11,14 +8,17 @@ import waiter from "../assets/images/Smiling man says welcome to tea with cake.p
 type Props = {};
 
 const Home = (props: Props) => {
-  const navigate = useNavigate();
+  const navigation = useNavigate();
 
   return (
     <div className="flex-1 bg-[#BCDBE3]">
       <h1 className="font-bold text-5xl mt-10">Plan Your Meals </h1>
       <div className="flex flex-row mx-[20%]">
         <img className="h-[200px] w-[250px]" src={soup} alt="Soup" />
-        <Button className="bg-[#74B9D7] text-black text-[32px] leading-none h-20 rounded-full ml-auto px-10 self-center">
+        <Button
+          className="bg-[#74B9D7] text-black text-[32px] leading-none h-20 rounded-full ml-auto px-10 self-center"
+          onClick={() => navigation("/meals/meal/create")}
+        >
           Let's get started
         </Button>
         <img

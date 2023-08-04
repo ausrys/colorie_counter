@@ -30,6 +30,7 @@ const Meal = (props: Props) => {
   const { categoriesModal, productsModal, searchModal } = useSelector(
     (state: any) => state.modal
   );
+  const { userInfo } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   // Get meal type
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -41,13 +42,18 @@ const Meal = (props: Props) => {
     },
   });
   const handleSaveMeal = () => {
+    const currentDate = new Date();
+
+    console.log(currentDate);
     postMealWithProducts.mutate({
       ...mealInfo,
       prods: mealProducts,
       title: selectedMealType,
       isPortion: isPortion,
+      createdAt: currentDate,
     });
-    dispatch(resetMealInfo());
+    // setIsPortion(0);
+    // dispatch(resetMealInfo());
   };
   return (
     <div className="">

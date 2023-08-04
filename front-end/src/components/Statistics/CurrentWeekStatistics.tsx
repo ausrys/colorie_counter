@@ -30,8 +30,13 @@ const CurrentWeekStatistics = ({}: any) => {
 export default CurrentWeekStatistics;
 // Current Week's Statistics
 export const CWSLoader = async () => {
-  const response = await axios.get(
-    rootAdress.concat("/statistics/currentWeek")
+  const currentDate = new Date().toISOString();
+  const response = await axios.post(
+    rootAdress.concat("/statistics/currentWeek"),
+    {
+      currentDate: currentDate,
+    },
+    { withCredentials: true }
   );
   return response.data;
 };

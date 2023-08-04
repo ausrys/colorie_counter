@@ -3,7 +3,6 @@ import { useState } from "react";
 import Calendar from "react-calendar";
 import "../components/Statistics/calendarStyles.css";
 import Button from "../components/Reusable Components/Button";
-import { useFetchData } from "../hooks/axiosHooks";
 import axios from "axios";
 import VerticalBarChart from "../components/Charts/VerticalBarChart";
 type Props = {};
@@ -12,13 +11,15 @@ const Statistics = (props: Props) => {
   const [fetchedData, setFetchedData] = useState(null);
   const submitHandler = async () => {
     if ((value[0] && value[1]) !== null) {
+      const startDate = value[0].toISOString();
+      const endDate = value[1].toISOString();
       const response = await axios.get(
-        `http://localhost:5000/statistics/test?startDate=${value[0]}&endDate=${value[1]}`
+        `http://localhost:5000/statistics/test?startDate=${startDate}&endDate=${endDate}`,
+        { withCredentials: true }
       );
       setFetchedData(response.data);
     }
   };
-  console.log(value);
   return (
     <div className="h-full">
       <div>
