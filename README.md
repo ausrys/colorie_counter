@@ -13,8 +13,8 @@ Future Plans
 The following are some of the features we plan to implement in the future:
 
 React reusable components to improve the application's efficiency.
-Tailwind CSS for a better and more consistent user interface.
-A dashboard for users to view their statistics and track their consumption of calories and other nutrients.
+Tailwind CSS for a better and more consistent user interface. - Added
+A dashboard for users to view their statistics and track their consumption of calories and other nutrients. - Added
 Getting Started
 To use the Colorie Counter Project application, follow these steps:
 
@@ -25,7 +25,3 @@ Configure the database credentials in the config file, config folder.
 Run the server by running the npm run start command in the terminal.
 Run the client by running the npm run start command in another terminal.
 Open the application in your browser at the address provided with vite.
-
-
-
-

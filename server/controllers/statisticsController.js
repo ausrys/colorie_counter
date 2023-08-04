@@ -81,6 +81,7 @@ module.exports.get_test_meals = async (req, res) => {
           [Op.between]: [startDate, endDate],
         },
         isPortion: 1,
+        user_id: req.token.userId,
       },
     });
     mealsByInterval.forEach((element) => {

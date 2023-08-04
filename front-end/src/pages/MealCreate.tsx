@@ -52,8 +52,8 @@ const Meal = (props: Props) => {
       isPortion: isPortion,
       createdAt: currentDate,
     });
-    // setIsPortion(0);
-    // dispatch(resetMealInfo());
+    setIsPortion(0);
+    dispatch(resetMealInfo());
   };
   return (
     <div className="">

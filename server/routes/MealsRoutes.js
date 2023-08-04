@@ -16,10 +16,5 @@ router.get(
   validateToken,
   mealsController.meal_page_get
 );
-router.get(
-  "/meals/meal/create/:meal_id",
-  validateToken,
-  mealsController.meal_create_get
-);
 // Exporting all the routes
 module.exports = router;

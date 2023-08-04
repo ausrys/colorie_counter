@@ -15,7 +15,7 @@ const createTokens = (user) => {
 };
 const validateToken = (req, res, next) => {
   const accessToken = req.cookies.accessToken;
-  if (!accessToken) return res.status(401).json("User is not Autheticated");
+  if (!accessToken) return res.status(401).json("User is not Authenticated");
 
   try {
     const decodedToken = verify(accessToken, process.env.JWT_SECRET);
@@ -27,12 +27,12 @@ const validateToken = (req, res, next) => {
 };
 const check_authorization = (req, res, next) => {
   const accessToken = req.cookies.accessToken;
-  if (!accessToken) return res.status(401).json("User is not Autheticated");
+  if (!accessToken) return res.status(401).json("User is not Authenticated");
   try {
     const validToken = verify(accessToken, process.env.JWT_SECRET);
 
     if (validToken && validToken.authorized === true) return next();
-    else return res.status(403).json("You are not authorized to this!");
+    else return res.status(403).json("You are not authorized to do this!");
   } catch (error) {
     return res.status(400).json(error);
   }
