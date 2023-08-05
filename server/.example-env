@@ -1,1 +1,6 @@
-JWT_SECRET = "typeyoursecret"
+JWT_SECRET = "yoursecret"
+NODE_ENV = "development"
+DB_HOST="yourhost"
+DB_USER="youruser"
+DB_PASS="yourpass"
+DB_NAME="youdbname"
