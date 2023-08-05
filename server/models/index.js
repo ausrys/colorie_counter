@@ -8,13 +8,9 @@ const db = {};
 
 let sequelize;
 if (process.env.NODE_ENV === "production") {
-  sequelize = new Sequelize({
-    username: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: process.env.DB_NAME,
-    host: process.env.DB_HOST,
-    dialect: "mysql",
-  });
+  sequelize = new Sequelize(
+    `mysql://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}:7999/${process.env.DB_NAME}`
+  );
 } else {
   sequelize = new Sequelize({
     username: "root",
