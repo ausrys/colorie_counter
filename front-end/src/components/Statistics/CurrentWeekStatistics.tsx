@@ -13,6 +13,7 @@ const CurrentWeekStatistics = ({}: any) => {
         <VerticalBarChart
           labels={Object.keys(data.CaloriesSumForEachWeekDay)}
           datasets={Object.values(data.CaloriesSumForEachWeekDay)}
+          title="Current Week's calories"
         />
       </div>
       <div className="w-1/2 h-80 flex justify-center">

@@ -3,11 +3,11 @@ import { Pie } from "react-chartjs-2";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 type PieProps = {
-  labels: String[];
-  label: String;
+  labels: string[];
+  label: string;
   pieData: number[];
 };
-const PieChart = (props: PieProps) => {
+const PieChart: React.FC<PieProps> = (props: PieProps) => {
   const data = {
     labels: props.labels,
     datasets: [

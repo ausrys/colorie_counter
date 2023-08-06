@@ -17,31 +17,7 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-export const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: "right" as const,
-    },
-    title: {
-      display: true,
-      text: "This week's daily calories",
-    },
-  },
-  scales: {
-    x: {
-      grid: {
-        display: false,
-      },
-    },
-    y: {
-      grid: {
-        display: false,
-      },
-    },
-  },
-  maintainAspectRatio: true,
-};
+
 const VerticalBarChart = (props: any) => {
   const data = {
     labels: props.labels,
@@ -52,6 +28,31 @@ const VerticalBarChart = (props: any) => {
         backgroundColor: "rgba(53, 162, 235, 0.5)",
       },
     ],
+  };
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "right" as const,
+      },
+      title: {
+        display: true,
+        text: props.title,
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+      },
+      y: {
+        grid: {
+          display: false,
+        },
+      },
+    },
+    maintainAspectRatio: true,
   };
   return <Bar className="h-full" options={options} data={data} />;
 };

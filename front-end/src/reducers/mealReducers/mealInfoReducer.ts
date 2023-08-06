@@ -1,19 +1,24 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { ProductWithWeightType } from "../../types/productTypes";
+import { MealInfoState } from "../../types/reducersTypes";
 
+const initialState: MealInfoState = {
+  mealProducts: [],
+  mealInfo: {
+    calories: 0,
+    protein: 0,
+    carbs: 0,
+    weight: 0,
+  },
+};
 const mealInfoReducer = createSlice({
   name: "mealInfo",
-  initialState: {
-    mealProducts: [],
-    mealInfo: {
-      calories: 0,
-      protein: 0,
-      carbs: 0,
-      weight: 0,
-    },
-  },
+  initialState,
   reducers: {
-    deleteProductFromMeal: (state, action) => {
+    deleteProductFromMeal: (
+      state,
+      action: PayloadAction<ProductWithWeightType>
+    ) => {
       const { calories, protein, carbs, weight } = action.payload;
       state.mealInfo.calories -= calories;
       state.mealInfo.protein -= protein;
@@ -24,14 +29,14 @@ const mealInfoReducer = createSlice({
           prod.product_id !== action.payload.product_id
       );
     },
-    addProductToMeal: (state, action) => {
+    addProductToMeal: (state, action: PayloadAction<ProductWithWeightType>) => {
       const { calories, protein, carbs, weight } = action.payload;
       state.mealInfo.calories += calories;
       state.mealInfo.protein += protein;
       state.mealInfo.carbs += carbs;
       state.mealInfo.weight += weight;
     },
-    addProductToList: (state, action) => {
+    addProductToList: (state, action: PayloadAction<ProductWithWeightType>) => {
       const newObject = action.payload;
       const existingObj = state.mealProducts.find(
         (obj: ProductWithWeightType) => obj.product_id === newObject.product_id

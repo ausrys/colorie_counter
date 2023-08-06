@@ -17,6 +17,7 @@ import MealInfo from "../components/Meal/MealInfo";
 import Button from "../components/Reusable Components/Button";
 import SearchProduct from "../components/Product/SearchProduct";
 import MealTypeSelect from "../components/Meal/MealTypeSelect";
+import { RootState } from "../types/reducersTypes";
 
 type Props = {};
 
@@ -30,7 +31,7 @@ const Meal = (props: Props) => {
   const { categoriesModal, productsModal, searchModal } = useSelector(
     (state: any) => state.modal
   );
-  const { userInfo } = useSelector((state) => state.user);
+  const { userInfo } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
   // Get meal type
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
