@@ -20,6 +20,7 @@ import Layout from "./components/Layout/Layout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import PrivateRoutes from "./components/Routes/PrivateRoutes";
+import NotFoundPage from "./pages/NotFoundPage";
 function App() {
   const client = new QueryClient();
   const router = createBrowserRouter(
@@ -41,6 +42,7 @@ function App() {
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route element={<NotFoundPage />} />
       </Route>
     )
   );

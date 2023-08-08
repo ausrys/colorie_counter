@@ -8,7 +8,7 @@ app.use(
   cors({
     origin:
       process.env.NODE_ENV === "production"
-        ? "https://colorie-counter-sx7c.vercel.app/"
+        ? "https://colorie-counter-sx7c.vercel.app"
         : "http://localhost:5173",
     credentials: true,
   })
