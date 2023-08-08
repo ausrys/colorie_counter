@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { backEndURL } from "../../types/enums";
 
 const schema = z.object({
   username: z.string().nonempty({ message: "Username is required" }).min(3),
@@ -18,7 +17,7 @@ type FormData = z.infer<typeof schema>;
 const RegisterForm: React.FC = () => {
   const registerNewUser = useMutation({
     mutationFn: (user: FormData) => {
-      return axios.post(`${backEndURL.url}/register`, user);
+      return axios.post(`${process.env.REACT_APP_BACKEND_URL}/register`, user);
     },
   });
   const {

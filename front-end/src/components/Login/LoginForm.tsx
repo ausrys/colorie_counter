@@ -7,7 +7,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { setUser } from "../../reducers/userReducers/userReducer";
 import { useDispatch } from "react-redux";
-import { backEndURL } from "../../types/enums";
 
 const schema = z.object({
   email: z.string().nonempty({ message: "Email is required" }).email({
@@ -21,7 +20,7 @@ const LoginForm: React.FC = () => {
   const navigation = useNavigate();
   const loginUser = useMutation({
     mutationFn: (user: FormData) => {
-      return axios.post(`${backEndURL.url}/login`, user, {
+      return axios.post(`${process.env.REACT_APP_BACKEND_URL}/login`, user, {
         withCredentials: true,
       });
     },

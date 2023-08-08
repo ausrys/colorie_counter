@@ -5,7 +5,6 @@ import Button from "../Reusable Components/Button";
 import { logOutUser } from "../../reducers/userReducers/userReducer";
 import axios from "axios";
 import { RootState } from "../../types/reducersTypes";
-import { backEndURL } from "../../types/enums";
 
 const Navbar = () => {
   const { userInfo } = useSelector((state: RootState) => state.user);
@@ -13,7 +12,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const logOutHandler = async () => {
     try {
-      await axios.post(`${backEndURL.url}/logout`, {
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/logout`, {
         withCredentials: true,
       });
       dispatch(logOutUser());

@@ -4,6 +4,3 @@ export enum MealType {
   Dinner = "Dinner",
   Snack = "Snack",
 }
-export enum backEndURL {
-  url = "https://coloriecounter-production.up.railway.app",
-}

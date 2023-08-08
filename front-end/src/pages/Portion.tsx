@@ -1,12 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import MealProductsList from "../components/Meal/MealProductsList";
-import { returnEditedObject, returnPrecisedNumber } from "../helper/functions";
-import { useFetchData } from "../hooks/axiosHooks";
-import { MealType, backEndURL } from "../types/enums";
-import { MealInfoType, ProductWithWeightType } from "../types/productTypes";
+import { returnPrecisedNumber } from "../helper/functions";
+import { MealType } from "../types/enums";
+import { ProductWithWeightType } from "../types/productTypes";
 import MealTypeSelect from "../components/Meal/MealTypeSelect";
 import MealInfo from "../components/Meal/MealInfo";
 import Button from "../components/Reusable Components/Button";
@@ -38,7 +37,10 @@ const Portion = (props: Props) => {
   const navigate = useNavigate();
   const mutation = useMutation({
     mutationFn: (newMeal: any) => {
-      return axios.post(`${backEndURL.url}meals/meal/create`, newMeal);
+      return axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}meals/meal/create`,
+        newMeal
+      );
     },
     onSuccess: (data: any) => {
       navigate(`/meals`);
