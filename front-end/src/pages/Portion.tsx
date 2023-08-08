@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import MealProductsList from "../components/Meal/MealProductsList";
 import { returnEditedObject, returnPrecisedNumber } from "../helper/functions";
 import { useFetchData } from "../hooks/axiosHooks";
-import { MealType } from "../types/enums";
+import { MealType, backEndURL } from "../types/enums";
 import { MealInfoType, ProductWithWeightType } from "../types/productTypes";
 import MealTypeSelect from "../components/Meal/MealTypeSelect";
 import MealInfo from "../components/Meal/MealInfo";
@@ -38,7 +38,7 @@ const Portion = (props: Props) => {
   const navigate = useNavigate();
   const mutation = useMutation({
     mutationFn: (newMeal: any) => {
-      return axios.post("http://localhost:5000/meals/meal/create", newMeal);
+      return axios.post(`${backEndURL.url}meals/meal/create`, newMeal);
     },
     onSuccess: (data: any) => {
       navigate(`/meals`);

@@ -1,7 +1,8 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { backEndURL } from "../types/enums";
 axios.defaults.withCredentials = true;
-const rootAdress = "http://localhost:5000";
+const rootAdress = backEndURL.url;
 
 export const useFetchData = (
   queryKey: (string | number)[],

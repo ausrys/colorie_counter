@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
-import { MealType } from "../types/enums";
+import { MealType, backEndURL } from "../types/enums";
 import { useSelector, useDispatch } from "react-redux";
 import { resetMealInfo } from "../reducers/mealReducers/mealInfoReducer";
 import ReusableModal from "../components/Modal/ReusableModal";
@@ -39,7 +39,7 @@ const Meal = (props: Props) => {
   };
   const postMealWithProducts = useMutation({
     mutationFn: (fullMeal: any) => {
-      return axios.post("http://localhost:5000/meals/meal/create", fullMeal);
+      return axios.post(`${backEndURL.url}/meals/meal/create`, fullMeal);
     },
   });
   const handleSaveMeal = () => {

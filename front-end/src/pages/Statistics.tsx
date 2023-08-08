@@ -5,7 +5,7 @@ import "../components/Statistics/calendarStyles.css";
 import Button from "../components/Reusable Components/Button";
 import axios from "axios";
 import VerticalBarChart from "../components/Charts/VerticalBarChart";
-import { LooseValue } from "react-calendar/dist/cjs/shared/types";
+import { backEndURL } from "../types/enums";
 type Props = {};
 const Statistics = (props: Props) => {
   const [value, onChange] = useState<any>(new Date());
@@ -16,7 +16,7 @@ const Statistics = (props: Props) => {
         const startDate = value[0].toISOString();
         const endDate = value[1].toISOString();
         const response = await axios.get(
-          `http://localhost:5000/statistics/test?startDate=${startDate}&endDate=${endDate}`,
+          `${backEndURL.url}/statistics/test?startDate=${startDate}&endDate=${endDate}`,
           { withCredentials: true }
         );
         setFetchedData(response.data);

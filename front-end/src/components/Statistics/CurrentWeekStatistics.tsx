@@ -2,7 +2,8 @@ import axios from "axios";
 import { useLoaderData } from "react-router-dom";
 import VerticalBarChart from "../Charts/VerticalBarChart";
 import PieChart from "../Charts/PieChart";
-const rootAdress = "http://localhost:5000";
+import { backEndURL } from "../../types/enums";
+const rootAdress = backEndURL.url;
 type Props = {};
 
 const CurrentWeekStatistics = ({}: any) => {
