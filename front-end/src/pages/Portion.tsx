@@ -38,7 +38,7 @@ const Portion = (props: Props) => {
   const mutation = useMutation({
     mutationFn: (newMeal: any) => {
       return axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}meals/meal/create`,
+        `${import.meta.env.VITE_BACKEND_URL}meals/meal/create`,
         newMeal
       );
     },

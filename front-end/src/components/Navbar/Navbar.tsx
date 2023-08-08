@@ -12,7 +12,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const logOutHandler = async () => {
     try {
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/logout`, {
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/logout`, {
         withCredentials: true,
       });
       dispatch(logOutUser());

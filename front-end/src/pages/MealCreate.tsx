@@ -40,7 +40,7 @@ const Meal = (props: Props) => {
   const postMealWithProducts = useMutation({
     mutationFn: (fullMeal: any) => {
       return axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/meals/meal/create`,
+        `${import.meta.env.VITE_BACKEND_URL}/meals/meal/create`,
         fullMeal
       );
     },

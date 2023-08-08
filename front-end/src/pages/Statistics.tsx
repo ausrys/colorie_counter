@@ -15,7 +15,9 @@ const Statistics = (props: Props) => {
         const startDate = value[0].toISOString();
         const endDate = value[1].toISOString();
         const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND_URL}/statistics/test?startDate=${startDate}&endDate=${endDate}`,
+          `${
+            import.meta.env.VITE_BACKEND_URL
+          }/statistics/test?startDate=${startDate}&endDate=${endDate}`,
           { withCredentials: true }
         );
         setFetchedData(response.data);

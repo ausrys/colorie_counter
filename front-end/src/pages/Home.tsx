@@ -9,7 +9,6 @@ type Props = {};
 
 const Home = (props: Props) => {
   const navigation = useNavigate();
-
   return (
     <div className="flex-1 bg-[#BCDBE3]">
       <h1 className="font-bold text-5xl mt-10">Plan Your Meals </h1>

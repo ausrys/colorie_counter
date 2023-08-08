@@ -21,6 +21,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import PrivateRoutes from "./components/Routes/PrivateRoutes";
 import NotFoundPage from "./pages/NotFoundPage";
+import AdminRoute from "./components/Routes/AdminRoute";
 function App() {
   const client = new QueryClient();
   const router = createBrowserRouter(
@@ -28,7 +29,9 @@ function App() {
       <Route element={<Layout />}>
         <Route path="" element={<PrivateRoutes />}>
           <Route path="/" element={<Home />} />
-          <Route path="/products" element={<Products />} />
+          <Route path="" element={<AdminRoute />}>
+            <Route path="/products" element={<Products />} />
+          </Route>
           <Route path="/meals" element={<Meals />} />
           <Route path="/meals/meal/:meal_id" element={<Meal />} />
           <Route path="/meals/meal/create/" element={<MealCreate />} />
@@ -42,7 +45,7 @@ function App() {
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route element={<NotFoundPage />} />
+        <Route path="/*" errorElement={<NotFoundPage />} />
       </Route>
     )
   );

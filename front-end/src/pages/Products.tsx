@@ -1,10 +1,6 @@
-import Product from "../components/Product/Product";
-type Props = {}
+type Props = {};
 const Products = (props: Props) => {
+  return <div>add product</div>;
+};
 
-  return (
-    <Product/>
-  )
-}
-
-export default Products
+export default Products;

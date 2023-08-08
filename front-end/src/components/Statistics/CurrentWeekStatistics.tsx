@@ -2,7 +2,7 @@ import axios from "axios";
 import { useLoaderData } from "react-router-dom";
 import VerticalBarChart from "../Charts/VerticalBarChart";
 import PieChart from "../Charts/PieChart";
-const rootAdress = process.env.REACT_APP_BACKEND_URL as string;
+const rootAdress = import.meta.env.VITE_BACKEND_URL;
 type Props = {};
 
 const CurrentWeekStatistics = ({}: any) => {

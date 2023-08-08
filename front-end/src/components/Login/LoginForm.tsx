@@ -20,7 +20,7 @@ const LoginForm: React.FC = () => {
   const navigation = useNavigate();
   const loginUser = useMutation({
     mutationFn: (user: FormData) => {
-      return axios.post(`${process.env.REACT_APP_BACKEND_URL}/login`, user, {
+      return axios.post(`${import.meta.env.VITE_BACKEND_URL}/login`, user, {
         withCredentials: true,
       });
     },
