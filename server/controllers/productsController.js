@@ -2,17 +2,27 @@ const { Products, FoodCategories } = require("../models");
 const { Op } = require("sequelize");
 module.exports.add_product_post = async (req, res) => {
   try {
-    const { product_id, title, calories, protein, carbs, food_category_id } =
-      req.body;
-    await Products.create({
-      product_id: product_id,
-      title: title,
-      calories: calories,
-      protein: protein,
-      carbs: carbs,
-      food_category_id: food_category_id,
+    const { title, calories, protein, carbs, food_category_id } = req.body;
+    if (calories < 1 || protein < 1 || carbs < 1)
+      return res
+        .status(400)
+        .json({ error: "Each nutrition value must be at least 1" });
+    const product = await Products.findOne({
+      where: { title: title },
     });
-    res.status(201).json("Product added successfuly");
+    if (product === null) {
+      await Products.create({
+        title: title,
+        calories: calories,
+        protein: protein,
+        carbs: carbs,
+        food_category_id: food_category_id,
+      });
+      res.status(201).json("Product added successfuly!");
+    } else
+      return res
+        .status(400)
+        .json({ error: "Product with this name already exists" });
   } catch (error) {
     console.log(error);
     res.status(400).json("Error");
@@ -31,8 +41,13 @@ module.exports.all_products_get = async (req, res) => {
 module.exports.add_category_post = async (req, res) => {
   try {
     const { category_name } = req.body;
-    await FoodCategories.create({ category_name });
-    res.status(201).json("Product category added");
+    const category = FoodCategories.findOne({
+      where: { category_name: category_name },
+    });
+    if (category === null) {
+      await FoodCategories.create({ category_name });
+      res.status(201).json("Product category added");
+    } else return res.status(400).json({ error: "Category already exists" });
   } catch (error) {
     console.log(error);
     res.status(400).json("Error");

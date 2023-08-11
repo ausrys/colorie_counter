@@ -7,7 +7,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import { Provider } from "react-redux";
-import Products from "./pages/Products";
+import Products from "./pages/Product";
 import Home from "./pages/Home";
 import MealCreate from "./pages/MealCreate";
 import Meal from "./pages/Meal";
@@ -22,6 +22,7 @@ import Register from "./pages/Register";
 import PrivateRoutes from "./components/Routes/PrivateRoutes";
 import NotFoundPage from "./pages/NotFoundPage";
 import AdminRoute from "./components/Routes/AdminRoute";
+import { categoriesLoader } from "./components/Product/categoriesLoader";
 function App() {
   const client = new QueryClient();
   const router = createBrowserRouter(
@@ -30,7 +31,11 @@ function App() {
         <Route path="" element={<PrivateRoutes />}>
           <Route path="/" element={<Home />} />
           <Route path="" element={<AdminRoute />}>
-            <Route path="/products" element={<Products />} />
+            <Route
+              path="/products/add"
+              element={<Products />}
+              loader={categoriesLoader}
+            />
           </Route>
           <Route path="/meals" element={<Meals />} />
           <Route path="/meals/meal/:meal_id" element={<Meal />} />
