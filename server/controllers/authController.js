@@ -43,7 +43,7 @@ module.exports.post_login = async (req, res) => {
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 30,
         sameSite: "none",
-        secure: process.env.NODE_ENV === "production" ? true : false,
+        secure: true,
       });
       res.status(200).json({ ...rest });
     }

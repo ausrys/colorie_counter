@@ -6,10 +6,7 @@ const cors = require("cors");
 
 app.use(
   cors({
-    origin:
-      process.env.NODE_ENV === "production"
-        ? "https://colorie-counter.vercel.app"
-        : "http://127.0.0.1:5173",
+    origin: "http://127.0.0.1:5173",
     credentials: true,
   })
 );
@@ -19,7 +16,9 @@ app.use(cookierParser());
 
 const db = require("./models");
 const rootRouter = require("./routes/rootRouter");
+const oldRecordsRemoval = require("./cron/cronjobs");
 app.use(rootRouter);
 db.sequelize.sync().then(() => {
   app.listen(process.env.PORT || 5000);
+  oldRecordsRemoval();
 });

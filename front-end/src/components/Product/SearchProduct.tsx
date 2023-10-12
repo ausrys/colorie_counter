@@ -4,9 +4,11 @@ import { useFetchData } from "../../hooks/axiosHooks";
 import { ProductType } from "../../types/productTypes";
 import { setProduct } from "../../reducers/productReducers/productInfoWithWeight";
 import ProductAddModal from "../Modal/ProductAddModal";
-type Props = {};
+import { RootState } from "../../types/reducersTypes";
 const SearchProduct = () => {
-  const searchInput = useSelector((state: any) => state.modal.searchInput);
+  const searchInput = useSelector(
+    (state: RootState) => state.modal.searchInput
+  );
 
   const dispatch = useDispatch();
   const [prodInfoModal, setProdInfoModal] = useState(false);
@@ -37,12 +39,7 @@ const SearchProduct = () => {
               </div>
             ))
           : null}
-        {prodInfoModal === true ? (
-          <ProductAddModal
-            prodInfoModal={prodInfoModal}
-            setProdInfoModal={setProdInfoModal}
-          />
-        ) : null}
+        {prodInfoModal === true ? <ProductAddModal /> : null}
       </div>
     </>
   );

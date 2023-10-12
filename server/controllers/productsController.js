@@ -1,15 +1,32 @@
+const { areInputsPositive } = require("../helper/helperFunctions");
 const { Products, FoodCategories } = require("../models");
 const { Op } = require("sequelize");
 module.exports.add_product_post = async (req, res) => {
+  const { title, calories, protein, carbs, food_category_id } = req.body;
+  if (
+    !title ||
+    isNaN(calories) ||
+    isNaN(protein) ||
+    isNaN(carbs) ||
+    isNaN(food_category_id)
+  )
+    return res.status(400).json({
+      error:
+        "All valus must be provided and they must be in the correct format",
+    });
+  if (!areInputsPositive([calories, protein, carbs]))
+    return res.status(400).json({ error: "Nutrition values must be positive" });
+  if (calories < 0 || protein < 0 || carbs < 0)
+    return res
+      .status(400)
+      .json({ error: "Nutrition values cannot be bellow zero" });
   try {
-    const { title, calories, protein, carbs, food_category_id } = req.body;
-    if (calories < 1 || protein < 1 || carbs < 1)
-      return res
-        .status(400)
-        .json({ error: "Each nutrition value must be at least 1" });
     const product = await Products.findOne({
       where: { title: title },
     });
+    const category = await FoodCategories.findByPk(food_category_id);
+    if (!category)
+      return res.status(404).json({ error: "Category does not exist!" });
     if (product === null) {
       await Products.create({
         title: title,
@@ -25,7 +42,7 @@ module.exports.add_product_post = async (req, res) => {
         .json({ error: "Product with this name already exists" });
   } catch (error) {
     console.log(error);
-    res.status(400).json("Error");
+    res.status(400).json("Something went wrong...");
   }
 };
 module.exports.all_products_get = async (req, res) => {
@@ -39,9 +56,10 @@ module.exports.all_products_get = async (req, res) => {
 };
 // Add new product category
 module.exports.add_category_post = async (req, res) => {
+  const { category_name } = req.body;
+  if (!category_name) return res.status(400).json("Category was not provided");
   try {
-    const { category_name } = req.body;
-    const category = FoodCategories.findOne({
+    const category = await FoodCategories.findOne({
       where: { category_name: category_name },
     });
     if (category === null) {
@@ -56,7 +74,9 @@ module.exports.add_category_post = async (req, res) => {
 // Get all categories
 module.exports.categories_get = async (req, res) => {
   try {
-    const all_categories = await FoodCategories.findAll();
+    const all_categories = await FoodCategories.findAll({
+      order: [["category_name", "ASC"]],
+    });
     res.status(200).json(all_categories);
   } catch (error) {
     console.log(error);

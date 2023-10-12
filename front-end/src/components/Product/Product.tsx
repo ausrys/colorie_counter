@@ -6,18 +6,22 @@ import { useDispatch, useSelector } from "react-redux";
 import { setProduct } from "../../reducers/productReducers/productInfoWithWeight";
 import Button from "../Reusable Components/Button";
 import {
-  closeProdModal,
-  openCatModal,
-  openSearchModal,
+  setCategoriesModal,
+  setProdInfoModal,
+  setProdsModal,
+  setSearchModal,
 } from "../../reducers/modalReducers/modalReducers";
+import { RootState } from "../../types/reducersTypes";
 
-const Product = (props: any) => {
+const Product = ({ category_id }: { category_id: number }) => {
   const dispatch = useDispatch();
   const { data, isLoading, error } = useFetchData(
-    ["allProductsByCategory", props.category_id],
-    `/products/${props.category_id}`
+    ["allProductsByCategory", category_id],
+    `/products/${category_id}`
   );
-  const [prodInfoModal, setProdInfoModal] = useState(false);
+  const prodInfoModal = useSelector(
+    (state: RootState) => state.modal.prodInfoModal
+  );
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -31,8 +35,8 @@ const Product = (props: any) => {
           <div key={key}>
             <span
               onClick={() => {
-                setProdInfoModal(true);
                 dispatch(setProduct(product));
+                dispatch(setProdInfoModal(true));
               }}
               className=" h-16 flex items-center justify-center m-3 cursor-pointer"
               key={product.product_id}
@@ -41,19 +45,14 @@ const Product = (props: any) => {
             </span>
           </div>
         ))}
-        {prodInfoModal === true ? (
-          <ProductAddModal
-            prodInfoModal={prodInfoModal}
-            setProdInfoModal={setProdInfoModal}
-          />
-        ) : null}
+        {prodInfoModal === true ? <ProductAddModal /> : null}
       </div>
       <div className="bg-gray-100 px-4 py-3">
         <Button
           size="default"
           onClick={() => {
-            dispatch(closeProdModal());
-            dispatch(openCatModal());
+            dispatch(setProdsModal(false));
+            dispatch(setCategoriesModal(true));
           }}
         >
           Back
@@ -61,8 +60,8 @@ const Product = (props: any) => {
         <Button
           size="default"
           onClick={() => {
-            dispatch(closeProdModal());
-            dispatch(openSearchModal());
+            dispatch(setProdsModal(false));
+            dispatch(setSearchModal(true));
           }}
         >
           Search

@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { ProductWithWeightType } from "../../types/productTypes";
 import { MealInfoState } from "../../types/reducersTypes";
+import { returnPrecisedNumber } from "../../helper/functions";
 
 const initialState: MealInfoState = {
   mealProducts: [],
@@ -10,6 +11,7 @@ const initialState: MealInfoState = {
     carbs: 0,
     weight: 0,
   },
+  portion: 1,
 };
 const mealInfoReducer = createSlice({
   name: "mealInfo",
@@ -59,6 +61,7 @@ const mealInfoReducer = createSlice({
       state.mealInfo.protein = 0;
       state.mealInfo.weight = 0;
       state.mealProducts = [];
+      state.portion = 1;
     },
     setMealInfo: (state, action) => {
       if (action.payload) {
@@ -70,6 +73,35 @@ const mealInfoReducer = createSlice({
         state.mealProducts = prodsInfo;
       }
     },
+    portionMealInfo: (state, action) => {
+      state.portion = returnPrecisedNumber(
+        Number(action.payload) / state.mealInfo.weight
+      );
+      const newPortionProdsArray = state.mealProducts.map(
+        (prod: ProductWithWeightType) => {
+          return {
+            ...prod,
+            calories: Number((prod.calories * state.portion).toFixed(2)),
+            protein: Number((prod.protein * state.portion).toFixed(2)),
+            carbs: Number((prod.carbs * state.portion).toFixed(2)),
+            weight: Number((prod.weight * state.portion).toFixed(2)),
+          };
+        }
+      );
+      state.mealProducts = newPortionProdsArray;
+      state.mealInfo.calories = Number(
+        (state.mealInfo.calories * state.portion).toFixed(2)
+      );
+      state.mealInfo.protein = Number(
+        (state.mealInfo.protein * state.portion).toFixed(2)
+      );
+      state.mealInfo.carbs = Number(
+        (state.mealInfo.carbs * state.portion).toFixed(2)
+      );
+      state.mealInfo.weight = Number(
+        (state.mealInfo.weight * state.portion).toFixed(2)
+      );
+    },
   },
 });
 export const {
@@ -78,5 +110,6 @@ export const {
   addProductToList,
   resetMealInfo,
   setMealInfo,
+  portionMealInfo,
 } = mealInfoReducer.actions;
 export default mealInfoReducer.reducer;

@@ -1,7 +1,6 @@
 import AddProduct from "../components/Product/AddProduct";
 
-type Props = {};
-const Product = (props: Props) => {
+const Product = () => {
   return (
     <div className="mt-[10%]">
       <AddProduct />

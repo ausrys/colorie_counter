@@ -5,9 +5,8 @@ import board from "../assets/images/board knife and carrots.png";
 import coffe from "../assets/images/minimal black line pencil paper cup of coffee, croissant and candy.png";
 import soup from "../assets/images/Soup with noodles in a white plate and two sticks.png";
 import waiter from "../assets/images/Smiling man says welcome to tea with cake.png";
-type Props = {};
 
-const Home = (props: Props) => {
+const Home = () => {
   const navigation = useNavigate();
   return (
     <div className="flex-1 bg-[#BCDBE3]">

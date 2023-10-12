@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import Button from "../Reusable Components/Button";
@@ -34,6 +33,9 @@ const Navbar = () => {
             <NavLink to={"/"}> Home </NavLink>
             <NavLink to={"/meals"}> Meals</NavLink>
             <NavLink to={"/statistics"}> Statistics </NavLink>
+            {userInfo.isAdmin === true ? (
+              <NavLink to={"/products/add"}> Add products </NavLink>
+            ) : null}
           </div>
           <div className="ml-auto px-7 py-5">
             <Button onClick={logOutHandler}>Logout</Button>

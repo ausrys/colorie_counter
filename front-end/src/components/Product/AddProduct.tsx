@@ -1,17 +1,24 @@
 import React, { useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { unknown, z } from "zod";
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
-import { addProductSchema } from "../../schemas/zodSchemas/zodSchemas";
+import { newProductScheema } from "../../schemas/zodSchemas/newProduct";
 import { useLoaderData } from "react-router-dom";
 import { Category } from "../../types/productTypes";
-type FormData = z.infer<typeof addProductSchema>;
+type FormData = z.infer<typeof newProductScheema>;
+interface CustomError {
+  response: {
+    data: {
+      error: string;
+    };
+  };
+}
 const AddProduct: React.FC = () => {
-  const [prodError, setprodError] = useState("");
+  const [prodError, setprodError] = useState<string | null>("");
   const [prodSuccess, setProdSuccess] = useState("");
-  const data: any = useLoaderData();
+  const data = useLoaderData() as Category[];
   const addproduct = useMutation({
     mutationFn: (product: FormData) => {
       return axios.post(
@@ -22,7 +29,7 @@ const AddProduct: React.FC = () => {
         }
       );
     },
-    onError: async (error: any) => {
+    onError: async (error: CustomError) => {
       setprodError(error?.response?.data?.error);
       setProdSuccess("");
     },
@@ -38,7 +45,7 @@ const AddProduct: React.FC = () => {
     reset,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(addProductSchema),
+    resolver: zodResolver(newProductScheema),
   });
   const onSubmit: SubmitHandler<FormData> = (data) => {
     addproduct.mutate(data);
@@ -66,7 +73,7 @@ const AddProduct: React.FC = () => {
         <Controller
           name="calories"
           control={control}
-          defaultValue={1}
+          defaultValue={0}
           render={({ field }) => (
             <input
               {...field}
@@ -84,7 +91,7 @@ const AddProduct: React.FC = () => {
         <Controller
           name="protein"
           control={control}
-          defaultValue={1}
+          defaultValue={0}
           render={({ field }) => (
             <input {...field} className="w-full px-3 py-2 border rounded-md" />
           )}
@@ -98,7 +105,7 @@ const AddProduct: React.FC = () => {
         <Controller
           name="carbs"
           control={control}
-          defaultValue={1}
+          defaultValue={0}
           render={({ field }) => (
             <input {...field} className="w-full px-3 py-2 border rounded-md" />
           )}
@@ -108,9 +115,9 @@ const AddProduct: React.FC = () => {
       <div className="mb-4">
         <label className="block text-gray-700">Category</label>
         <Controller
-          name="food_cateogry_id"
+          name="food_category_id"
           control={control}
-          defaultValue={1}
+          defaultValue={0}
           render={({ field }) => (
             <select {...field} className="w-full px-3 py-2 border rounded-md">
               {data.map((category: Category) => (
@@ -125,7 +132,6 @@ const AddProduct: React.FC = () => {
             </select>
           )}
         />
-        {errors.carbs && <p className="text-red-500">{errors.carbs.message}</p>}
       </div>
       <button
         type="submit"
@@ -135,12 +141,12 @@ const AddProduct: React.FC = () => {
       </button>
       {prodError !== "" ? (
         <div className="bg-red-500 my-2  text-white py-2 px-4 rounded-md">
-          <p>{prodError}</p>
+          <span>{prodError}</span>
         </div>
       ) : null}
       {prodSuccess !== "" ? (
         <div className="bg-green-500 my-2  text-white py-2 px-4 rounded-md">
-          <p>{prodSuccess}</p>
+          <span>{prodSuccess}</span>
         </div>
       ) : null}
     </form>

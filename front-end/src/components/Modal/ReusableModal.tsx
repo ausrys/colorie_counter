@@ -1,11 +1,18 @@
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchInput } from "../../reducers/modalReducers/modalReducers";
-const ReusableModal = (props: any) => {
+import { RootState } from "../../types/reducersTypes";
+import { ReactNode } from "react";
+type ReusableModalProps = {
+  modalTitle: string;
+  children: ReactNode;
+};
+const ReusableModal = (props: ReusableModalProps) => {
   const isSearchModalOpen = useSelector(
-    (state: any) => state.modal.searchModal
+    (state: RootState) => state.modal.searchModal
   );
-  const searchInput = useSelector((state: any) => state.modal.searchInput);
+  const searchInput = useSelector(
+    (state: RootState) => state.modal.searchInput
+  );
   const dispatch = useDispatch();
   return (
     <div>

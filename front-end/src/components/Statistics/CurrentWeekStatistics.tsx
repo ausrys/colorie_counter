@@ -2,11 +2,11 @@ import axios from "axios";
 import { useLoaderData } from "react-router-dom";
 import VerticalBarChart from "../Charts/VerticalBarChart";
 import PieChart from "../Charts/PieChart";
+import { currentWeeksStatistics } from "../../types/statisticsTypes";
 const rootAdress = import.meta.env.VITE_BACKEND_URL;
-type Props = {};
 
-const CurrentWeekStatistics = ({}: any) => {
-  const data: any = useLoaderData();
+const CurrentWeekStatistics = () => {
+  const data = useLoaderData() as currentWeeksStatistics;
   return (
     <div className="flex flex-row">
       <div className="w-1/2 h-80 flex justify-center">

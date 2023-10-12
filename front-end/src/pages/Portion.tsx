@@ -1,48 +1,51 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MealProductsList from "../components/Meal/MealProductsList";
-import { returnPrecisedNumber } from "../helper/functions";
 import { MealType } from "../types/enums";
-import { ProductWithWeightType } from "../types/productTypes";
 import MealTypeSelect from "../components/Meal/MealTypeSelect";
 import MealInfo from "../components/Meal/MealInfo";
 import Button from "../components/Reusable Components/Button";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  closeSearchModal,
-  openCatModal,
+  setCategoriesModal,
+  setSearchModal,
 } from "../reducers/modalReducers/modalReducers";
 import ReusableModal from "../components/Modal/ReusableModal";
 import FoodCategories from "../components/Product/FoodCategories";
 import Product from "../components/Product/Product";
 import SearchProduct from "../components/Product/SearchProduct";
-import { setMealInfo } from "../reducers/mealReducers/mealInfoReducer";
+import { RootState } from "../types/reducersTypes";
+import {
+  portionMealInfo,
+  resetMealInfo,
+} from "../reducers/mealReducers/mealInfoReducer";
+import { TmealCreate } from "../types/mealTypes";
 
-type Props = {};
-
-const Portion = (props: Props) => {
-  const mealProducts = useSelector((state: any) => state.mealInfo.mealProducts);
-  const mealInfo = useSelector((state: any) => state.mealInfo.mealInfo);
+const Portion = () => {
   const dispatch = useDispatch();
+  const mealProducts = useSelector(
+    (state: RootState) => state.mealInfo.mealProducts
+  );
+  const mealInfo = useSelector((state: RootState) => state.mealInfo.mealInfo);
   const [selectedMealType, setSelectedMealType] = useState(MealType.Breakfast);
   const { categoriesModal, productsModal, searchModal } = useSelector(
-    (state: any) => state.modal
+    (state: RootState) => state.modal
   );
-  const [category_name, setCategory_name] = useState(null);
-  const [category_id, setCategory_id] = useState(null);
+  const [category_name, setCategory_name] = useState<string>("");
+  const [category_id, setCategory_id] = useState<number | null>(null);
   const mealPortion = useRef<HTMLInputElement>(null);
-  const [portion, setPortion] = useState(1);
+  const portion = useSelector((state: RootState) => state.mealInfo.portion);
   const navigate = useNavigate();
-  const mutation = useMutation({
-    mutationFn: (newMeal: any) => {
+  const postPortionedMeal = useMutation({
+    mutationFn: (newMeal: TmealCreate) => {
       return axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}meals/meal/create`,
+        `${import.meta.env.VITE_BACKEND_URL}/meals/meal/create`,
         newMeal
       );
     },
-    onSuccess: (data: any) => {
+    onSuccess: () => {
       navigate(`/meals`);
     },
   });
@@ -51,43 +54,24 @@ const Portion = (props: Props) => {
     setSelectedMealType(event.target.value as MealType);
   };
   const updateValuesWithPortion = () => {
-    setPortion(
-      returnPrecisedNumber(Number(mealPortion.current?.value) / mealInfo.weight)
-    );
+    dispatch(portionMealInfo(mealPortion.current?.value));
   };
-  useEffect(() => {
-    const newPortionProdsArray = mealProducts.map(
-      (prod: ProductWithWeightType) => {
-        return {
-          ...prod,
-          calories: Number((prod.calories * portion).toFixed(2)),
-          protein: Number((prod.protein * portion).toFixed(2)),
-          carbs: Number((prod.carbs * portion).toFixed(2)),
-          weight: Number((prod.weight * portion).toFixed(2)),
-        };
-      }
-    );
+  const handleSaveMeal = () => {
+    const currentDate = new Date();
 
-    const updatedMealValuesByPortion = {
-      calories: Number((mealInfo.calories * portion).toFixed(2)),
-      protein: Number((mealInfo.protein * portion).toFixed(2)),
-      carbs: Number((mealInfo.carbs * portion).toFixed(2)),
-      weight: Number((mealInfo.weight * portion).toFixed(2)),
-    };
-
-    dispatch(
-      setMealInfo({
-        ...updatedMealValuesByPortion,
-        prodsInfo: newPortionProdsArray,
-      })
-    );
-  }, [portion]);
-
+    postPortionedMeal.mutate({
+      ...mealInfo,
+      prods: mealProducts,
+      title: selectedMealType,
+      isPortion: 1,
+      createdAt: currentDate,
+    });
+    dispatch(resetMealInfo());
+  };
   return (
     <div className="flex-1">
-      {/* First section */}
       <div>
-        <h2>Portion: {portion}</h2>
+        <h2>Portion: {portion * 100}%</h2>
         <h2>{selectedMealType}</h2>
         <MealTypeSelect
           selectedMealType={selectedMealType}
@@ -95,14 +79,18 @@ const Portion = (props: Props) => {
         />
       </div>
       <div className=" h-96 flex flex-row ">
-        <MealInfo mealInfo={mealInfo} prodsInfoLength={mealProducts.length} />
+        <MealInfo />
         <div className="flex flex-col items-center m-4">
           {portion === 1 ? (
             <>
-              <span style={{ textAlign: "left" }}>
-                Set value of the portion
-              </span>
-              <input ref={mealPortion} type="number" name="" id="" />
+              <span className="text-left mb-2">Set value of the portion</span>
+              <input
+                ref={mealPortion}
+                type="number"
+                name=""
+                id=""
+                className="mb-2 border border-black rounded-md"
+              />
               <Button
                 size={"default"}
                 onClick={() => updateValuesWithPortion()}
@@ -113,15 +101,14 @@ const Portion = (props: Props) => {
           ) : null}
         </div>
       </div>
-      <MealProductsList
-        title="Meal products"
-        prodsInfo={mealProducts}
-        isListItemsRemovable={true}
-      />
+      <MealProductsList isRemovable={true} title={"Added products:"} />
       <div style={{ display: "flex", flexDirection: "row" }}>
         {/* Portion meal */}
         <div style={{ width: "40%", margin: "auto" }}>
-          <Button size={"lg"} onClick={() => dispatch(openCatModal())}>
+          <Button
+            size={"lg"}
+            onClick={() => dispatch(setCategoriesModal(true))}
+          >
             Add product
           </Button>
           {categoriesModal === true ? (
@@ -134,7 +121,9 @@ const Portion = (props: Props) => {
           ) : null}
           {productsModal === true ? (
             <ReusableModal modalTitle={category_name}>
-              <Product category_id={category_id} />
+              {category_id !== null ? (
+                <Product category_id={category_id} />
+              ) : null}
             </ReusableModal>
           ) : null}
           {searchModal === true ? (
@@ -144,7 +133,7 @@ const Portion = (props: Props) => {
                 <Button
                   size="default"
                   onClick={() => {
-                    dispatch(closeSearchModal());
+                    dispatch(setSearchModal(false));
                   }}
                 >
                   Close
@@ -157,18 +146,7 @@ const Portion = (props: Props) => {
       <div>{portion < 1 ? <div></div> : null}</div>
       {portion !== 1 ? (
         <div>
-          <Button
-            onClick={() =>
-              mutation.mutate({
-                ...mealInfo,
-                prods: mealProducts,
-                title: selectedMealType,
-                isPortion: 1,
-              })
-            }
-          >
-            Save the meal
-          </Button>
+          <Button onClick={() => handleSaveMeal()}>Save the meal</Button>
         </div>
       ) : null}
     </div>

@@ -17,8 +17,12 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
-const VerticalBarChart = (props: any) => {
+type VerticalBarCHartProps = {
+  title: string;
+  labels: string[];
+  datasets: number[];
+};
+const VerticalBarChart = (props: VerticalBarCHartProps) => {
   const data = {
     labels: props.labels,
     datasets: [

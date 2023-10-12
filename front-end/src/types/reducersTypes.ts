@@ -21,8 +21,10 @@ interface ModalState {
   productsModal: boolean;
   searchModal: boolean;
   searchInput: string;
+  prodInfoModal: boolean;
 }
 export interface MealInfoState {
   mealProducts: ProductWithWeightType[];
   mealInfo: MealInfoType;
+  portion: number;
 }

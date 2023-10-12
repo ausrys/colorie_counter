@@ -14,11 +14,11 @@ const PieChart: React.FC<PieProps> = (props: PieProps) => {
       {
         label: props.label,
         data: props.pieData,
-        backgroundColor: ["white", "rgb(54, 162, 235)", "rgb(255, 206, 86)"],
+        backgroundColor: ["#f1b963", "#ffd3b6", "#42b883"],
         borderColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
+          "rgba(0, 0, 0, 1)",
+          "rgba(0, 0, 0, 1)",
+          "rgba(0, 0, 0, 1)",
         ],
         borderWidth: 1,
       },

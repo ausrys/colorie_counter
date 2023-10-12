@@ -15,14 +15,23 @@ module.exports = (sequelize, DataTypes) => {
       calories: {
         type: DataTypes.FLOAT,
         allowNull: false,
+        validate: {
+          min: 0,
+        },
       },
       protein: {
         type: DataTypes.FLOAT,
         allowNull: false,
+        validate: {
+          min: 0,
+        },
       },
       carbs: {
         type: DataTypes.FLOAT,
         allowNull: false,
+        validate: {
+          min: 0,
+        },
       },
       picture_path: {
         type: DataTypes.STRING,

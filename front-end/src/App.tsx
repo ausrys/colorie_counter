@@ -20,9 +20,10 @@ import Layout from "./components/Layout/Layout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import PrivateRoutes from "./components/Routes/PrivateRoutes";
-import NotFoundPage from "./pages/NotFoundPage";
 import AdminRoute from "./components/Routes/AdminRoute";
 import { categoriesLoader } from "./components/Product/categoriesLoader";
+import { mealInfoLoader, mealsLoader } from "./helper/routesLoaders";
+import PageError from "./pages/PageError";
 function App() {
   const client = new QueryClient();
   const router = createBrowserRouter(
@@ -37,10 +38,20 @@ function App() {
               loader={categoriesLoader}
             />
           </Route>
-          <Route path="/meals" element={<Meals />} />
-          <Route path="/meals/meal/:meal_id" element={<Meal />} />
+          <Route path="/meals" element={<Meals />} loader={mealsLoader} />
+          <Route
+            path="/meals/meal/:meal_id"
+            element={<Meal />}
+            loader={mealInfoLoader}
+            errorElement={<PageError error="Meal was not found" />}
+          />
           <Route path="/meals/meal/create/" element={<MealCreate />} />
-          <Route path="/meals/meal/portion/:meal_id" element={<Portion />} />
+          <Route
+            path="/meals/meal/portion/:meal_id"
+            loader={mealInfoLoader}
+            element={<Portion />}
+            errorElement={<PageError error="Meal was not found" />}
+          />
           <Route
             path="/statistics"
             element={<Statistics />}
@@ -50,7 +61,6 @@ function App() {
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/*" errorElement={<NotFoundPage />} />
       </Route>
     )
   );

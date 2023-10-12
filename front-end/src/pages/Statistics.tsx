@@ -5,12 +5,17 @@ import "../components/Statistics/calendarStyles.css";
 import Button from "../components/Reusable Components/Button";
 import axios from "axios";
 import VerticalBarChart from "../components/Charts/VerticalBarChart";
-type Props = {};
-const Statistics = (props: Props) => {
-  const [value, onChange] = useState<any>(new Date());
+const Statistics = () => {
+  const now = new Date();
+  const yesterdayBegin = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() - 1
+  );
+  const [value, onChange] = useState<any>([yesterdayBegin, now]);
   const [fetchedData, setFetchedData] = useState(null);
   const submitHandler = async () => {
-    if (value && (value[0] && value[1]) !== undefined) {
+    if (value && (value[0] && value[1]) !== null) {
       try {
         const startDate = value[0].toISOString();
         const endDate = value[1].toISOString();
@@ -39,7 +44,6 @@ const Statistics = (props: Props) => {
             onChange={(value) => onChange(value)}
             value={value}
             locale="en-GB"
-            calendarType="ISO 8601"
             allowPartialRange={true}
             selectRange={true}
           />

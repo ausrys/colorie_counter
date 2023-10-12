@@ -1,53 +1,29 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useLoaderData, useParams, NavLink } from "react-router-dom";
 import MealInfo from "../components/Meal/MealInfo";
-import { useFetchData } from "../hooks/axiosHooks";
 import MealProductsList from "../components/Meal/MealProductsList";
-import Button from "../components/Reusable Components/Button";
-import { useDispatch } from "react-redux";
-import { setMealInfo } from "../reducers/mealReducers/mealInfoReducer";
+import { mealInfoData } from "../types/mealTypes";
 
-type Props = {};
-
-const Meal = (props: Props) => {
+const Meal = () => {
+  const data = useLoaderData() as mealInfoData;
   const { meal_id } = useParams();
-  if (!meal_id) return <h2>Provide a Meal</h2>;
-  const { data, isLoading, error } = useFetchData(
-    ["mealget", meal_id],
-    `/meals/meal/${meal_id}`
-  );
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  if (isLoading) return <h1>Loading...</h1>;
-  if (data) {
-    const { title, calories, carbs, weight, protein, prodsInfo, isPortion } =
-      data;
-    return (
-      <div className="">
-        <h1>{title}</h1>
-        <div className="flex h-80">
-          <MealInfo
-            mealInfo={{ calories, carbs, protein, weight }}
-            prodsInfoLength={prodsInfo.length}
-          />
-          {isPortion === false ? (
-            <Button
-              onClick={() => {
-                navigate(`/meals/meal/portion/${meal_id}`);
-                dispatch(setMealInfo(data));
-              }}
-            >
-              Portion the meal
-            </Button>
-          ) : null}
-        </div>
-        <MealProductsList
-          isListItemsRemovable={false}
-          prodsInfo={prodsInfo}
-          title={`${title} products`}
-        />
+  return (
+    <section className="">
+      {data?.isPortion === false ? (
+        <NavLink
+          to={`/meals/meal/portion/${meal_id}`}
+          className={
+            "bg-blue-500 hover:bg-blue-700 text-white font-bold h-10 rounded-md py-2 px-2 ml-auto my-auto"
+          }
+        >
+          Portion the meal
+        </NavLink>
+      ) : null}
+      <div className="flex h-80">
+        <MealInfo />
       </div>
-    );
-  } else return <h1>Meal was not found</h1>;
+      <MealProductsList isRemovable={false} title={`${data?.title} products`} />
+    </section>
+  );
 };
 
 export default Meal;

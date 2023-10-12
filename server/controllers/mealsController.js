@@ -1,5 +1,4 @@
 const { Meals, MealProducts, Products, sequelize } = require("../models");
-const { Op } = require("sequelize");
 const { DateTime } = require("luxon");
 // Create a meal
 module.exports.create_meal_post = async (req, res) => {
@@ -56,9 +55,10 @@ module.exports.all_meals_get = async (req, res) => {
 // Get a meal
 module.exports.meal_page_get = async (req, res) => {
   const { meal_id } = req.params;
-  if (!meal_id) return res.status(400).json("Meal doesn't exist");
+  if (!meal_id) return res.status(400).json({ error: "Choose a meal!" });
   try {
-    const meal = await Meals.findByPk(meal_id, {
+    const meal = await Meals.findOne({
+      where: { meal_id: meal_id, user_id: req.token.userId },
       attributes: { exclude: ["meal_id"] },
       include: [
         {
@@ -70,6 +70,7 @@ module.exports.meal_page_get = async (req, res) => {
         },
       ],
     });
+    if (!meal) return res.status(400).json({ error: "Meal doesn't exist" });
     // Returning an ojbect of every product in simplified format, because sequelize returns them in a very inconvienient way
     const prodsInfo = meal.dataValues.Products.map((product) => {
       const { dataValues } = product.MealProducts;
@@ -77,19 +78,8 @@ module.exports.meal_page_get = async (req, res) => {
 
       return { title, product_id, ...dataValues };
     });
-    const {
-      title,
-      createdAt,
-      calories,
-      protein,
-      carbs,
-      weight,
-      isPortion,
-      user_id,
-    } = meal.dataValues;
-    // Checking if an user wants to see his own meal
-    if (user_id !== req.token.userId)
-      return res.status(401).json("Thats not your meal!");
+    const { title, createdAt, calories, protein, carbs, weight, isPortion } =
+      meal.dataValues;
     res.status(200).json({
       title,
       createdAt,

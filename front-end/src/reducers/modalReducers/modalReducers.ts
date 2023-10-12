@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, isAction } from "@reduxjs/toolkit";
 
 const modalReducers = createSlice({
   name: "modalReducers",
@@ -7,39 +7,32 @@ const modalReducers = createSlice({
     productsModal: false,
     searchModal: false,
     searchInput: "",
+    prodInfoModal: false,
   },
   reducers: {
-    openProdModal: (state) => {
-      state.productsModal = true;
+    setProdsModal: (state, action) => {
+      state.productsModal = action.payload;
     },
-    closeProdModal: (state) => {
-      state.productsModal = false;
+    setCategoriesModal: (state, action) => {
+      state.categoriesModal = action.payload;
     },
-    openCatModal: (state) => {
-      state.categoriesModal = true;
-    },
-    closeCatModal: (state) => {
-      state.categoriesModal = false;
-    },
-    openSearchModal: (state) => {
-      state.searchModal = true;
-    },
-    closeSearchModal: (state) => {
-      state.searchModal = false;
+    setSearchModal: (state, action) => {
+      state.searchModal = action.payload;
     },
     setSearchInput: (state, action) => {
       state.searchInput = action.payload;
+    },
+    setProdInfoModal: (state, action) => {
+      state.prodInfoModal = action.payload;
     },
   },
 });
 
 export const {
-  openProdModal,
-  closeProdModal,
-  openCatModal,
-  openSearchModal,
-  closeCatModal,
-  closeSearchModal,
+  setProdsModal,
+  setCategoriesModal,
+  setSearchModal,
   setSearchInput,
+  setProdInfoModal,
 } = modalReducers.actions;
 export default modalReducers.reducer;
