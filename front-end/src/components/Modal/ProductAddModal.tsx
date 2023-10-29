@@ -13,11 +13,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { RootState } from "../../types/reducersTypes";
 import {
+  closeAllModals,
   setProdInfoModal,
   setProdsModal,
 } from "../../reducers/modalReducers/modalReducers";
 
-const ProductAddModal = () => {
+const ProductAddModal: React.FC = () => {
   const productInfo = useSelector((state: RootState) => state.productInfo);
   type ProductWeight = z.infer<typeof addProductSchema>;
   const dispatch = useDispatch();
@@ -31,69 +32,93 @@ const ProductAddModal = () => {
   // Add product nutrition values to the meal
   const handleSaveClick = (data: ProductWeight) => {
     // Check product weight
-    // !! needs to be added checking for negative values
     // Create a new object, where product values are based on the weight of the product
     const newObject = returnEditedObject(productInfo, data.weight);
-    dispatch(addProductToMeal(newObject));
-    dispatch(addProductToList(newObject));
-    dispatch(setProdInfoModal(false));
+    if (newObject.product_id > 0) {
+      dispatch(addProductToMeal(newObject));
+      dispatch(addProductToList(newObject));
+      dispatch(closeAllModals());
+      dispatch(clearProdInfo());
+      return;
+    }
+    dispatch(closeAllModals());
     dispatch(clearProdInfo());
   };
   return (
-    <form onSubmit={handleSubmit(handleSaveClick)}>
-      <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
-        <div className="absolute bg-gray-900 opacity-50 top-0 left-0 w-full h-full"></div>
-        <div className="bg-white rounded-lg p-8 z-10 relative h-1/2 w-1/2">
-          <h2>Set weight for {productInfo.title}</h2>
-          <div>
-            {Object.entries(productInfo).map(([key, value], mapkey) => {
-              if (key !== "product_id")
-                return (
-                  <h4 key={mapkey}>
-                    {key}: {value as ReactNode}
-                  </h4>
-                );
-            })}
-          </div>
-          <div className="flex flex-col items-center ">
+    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
+      {/* Modal Overlay */}
+      <div className="absolute bg-gray-900 opacity-50 top-0 left-0 w-full h-full z-10"></div>
+
+      {/* Modal */}
+      <div className="bg-white rounded-lg p-8 z-20 relative min-h-1/2 w-1/2 shadow-lg">
+        <h2 className="text-2xl font-semibold mb-4 text-blue-800">
+          Set weight for {productInfo.title}
+        </h2>
+
+        {/* Product Info */}
+        <div>
+          <h2 className="text-lg font-semibold mb-2 text-blue-800">
+            Product Information
+          </h2>
+          {Object.entries(productInfo).map(([key, value], mapkey) => {
+            if (key !== "product_id") {
+              return (
+                <div
+                  key={mapkey}
+                  className="flex justify-between items-center mb-1"
+                >
+                  <span className="text-gray-600">{key}</span>
+                  <span className="text-indigo-600">{value as ReactNode}</span>
+                </div>
+              );
+            }
+          })}
+        </div>
+
+        {/* Weight Input */}
+        <form onSubmit={handleSubmit(handleSaveClick)}>
+          <div className="flex flex-col items-center mt-3 mb-1">
             <Controller
               name="weight"
               control={control}
+              defaultValue={1}
               render={({ field }) => (
                 <input
                   {...field}
-                  defaultValue={0}
-                  type="float"
+                  type="number"
                   placeholder="Enter weight"
-                  className="px-4 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-40 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  step={0.1}
                 />
               )}
             />
 
-            <span className="error text-red-600 h-5 m-4">
-              <>
-                {errors?.weight?.message !== null
-                  ? errors?.weight?.message
-                  : null}
-              </>
+            <span className="error text-red-600 mt-2">
+              {errors?.weight?.message || null}
             </span>
           </div>
-
-          <div className="flex justify-end mt-4">
-            <Button type="submit">Save</Button>
+          {/* Buttons */}
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              className="mr-2 bg-blue-500 hover:bg-blue-600 text-white"
+            >
+              Save
+            </Button>
             <Button
               type="button"
               onClick={() => {
-                dispatch(setProdsModal(false));
+                dispatch(setProdInfoModal(false));
                 dispatch(clearProdInfo());
               }}
+              className="bg-red-500 hover:bg-red-600 text-white"
             >
               Cancel
             </Button>
           </div>
-        </div>
+        </form>
       </div>
-    </form>
+    </div>
   );
 };
 export default ProductAddModal;

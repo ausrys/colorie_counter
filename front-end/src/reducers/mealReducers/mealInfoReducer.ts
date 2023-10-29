@@ -2,6 +2,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { ProductWithWeightType } from "../../types/productTypes";
 import { MealInfoState } from "../../types/reducersTypes";
 import { returnPrecisedNumber } from "../../helper/functions";
+import { mealInfoData } from "../../types/mealTypes";
 
 const initialState: MealInfoState = {
   mealProducts: [],
@@ -56,14 +57,11 @@ const mealInfoReducer = createSlice({
       } else state.mealProducts = [...state.mealProducts, newObject];
     },
     resetMealInfo: (state) => {
-      state.mealInfo.calories = 0;
-      state.mealInfo.carbs = 0;
-      state.mealInfo.protein = 0;
-      state.mealInfo.weight = 0;
-      state.mealProducts = [];
-      state.portion = 1;
+      state.mealInfo = initialState.mealInfo;
+      state.mealProducts = initialState.mealProducts;
+      state.portion = initialState.portion;
     },
-    setMealInfo: (state, action) => {
+    setMealInfo: (state, action: PayloadAction<mealInfoData>) => {
       if (action.payload) {
         const { calories, protein, carbs, weight, prodsInfo } = action.payload;
         state.mealInfo.calories = calories;

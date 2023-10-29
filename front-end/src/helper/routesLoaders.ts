@@ -14,3 +14,7 @@ export const mealsLoader: LoaderFunction = async () => {
   const response = await axios.get(rootAdress.concat("/meals"));
   return response.data;
 };
+export const adminChechLoader: LoaderFunction = async () => {
+  const response = await axios.get(rootAdress.concat("/admin"));
+  return response.data;
+};

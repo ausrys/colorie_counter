@@ -9,8 +9,8 @@ import waiter from "../assets/images/Smiling man says welcome to tea with cake.p
 const Home = () => {
   const navigation = useNavigate();
   return (
-    <div className="flex-1 bg-[#BCDBE3]">
-      <h1 className="font-bold text-5xl mt-10">Plan Your Meals </h1>
+    <div className="grow bg-[#BCDBE3]">
+      <h1 className="font-bold text-5xl my-3 ">Plan Your Meals </h1>
       <div className="flex flex-row mx-[20%]">
         <img className="h-[200px] w-[250px]" src={soup} alt="Soup" />
         <Button
@@ -31,7 +31,7 @@ const Home = () => {
       <div className="flex flex-row justify-center">
         <div className="w-2/5 mx-5">
           <h3 className="text-2xl m-3 font-bold">About</h3>
-          <p className="text-[28px]">
+          <p className="text-[24px]">
             You can plan your meals, daily calorie intake and keep up your
             progress. This helps you to acknowledge and change (if needed) your
             diet behavior.
@@ -39,7 +39,7 @@ const Home = () => {
         </div>
         <div className="w-2/5 mx-4">
           <h3 className="text-2xl m-3 font-bold">Recomendations</h3>
-          <p className="text-[28px]">
+          <p className="text-[24px]">
             Always talk to a specialist about your diet behavior and its
             changes, so you could stay healthy! Remember, it's important to eat
             healthy and nutritious food, stay active and rest. Don't restrict

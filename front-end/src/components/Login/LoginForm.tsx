@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -7,6 +7,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { setUser } from "../../reducers/userReducers/userReducer";
 import { useDispatch } from "react-redux";
+import Button from "../Reusable Components/Button";
 
 const schema = z.object({
   email: z.string().nonempty({ message: "Email is required" }).email({
@@ -16,6 +17,7 @@ const schema = z.object({
 });
 type FormData = z.infer<typeof schema>;
 const LoginForm: React.FC = () => {
+  const [authError, setAuthError] = useState("");
   const dispatch = useDispatch();
   const navigation = useNavigate();
   const loginUser = useMutation({
@@ -27,6 +29,9 @@ const LoginForm: React.FC = () => {
     onSuccess: async ({ data }) => {
       dispatch(setUser(data));
       navigation("/");
+    },
+    onError: async () => {
+      setAuthError("Wrong email or password");
     },
   });
   const {
@@ -41,11 +46,11 @@ const LoginForm: React.FC = () => {
   };
   return (
     <form
-      className="max-w-sm mx-auto p-4 bg-white shadow-md rounded-md"
+      className="w-1/5 p-4 bg-white shadow-md rounded-md"
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className="mb-4">
-        <label className="block text-gray-700">Email</label>
+        <label className="block text-gray-700 mb-2">Email</label>
         <Controller
           name="email"
           control={control}
@@ -58,7 +63,7 @@ const LoginForm: React.FC = () => {
       </div>
 
       <div className="mb-4">
-        <label className="block text-gray-700">Password</label>
+        <label className="block text-gray-700 mb-2">Password</label>
         <Controller
           name="password"
           control={control}
@@ -76,12 +81,17 @@ const LoginForm: React.FC = () => {
         )}
       </div>
 
-      <button
+      <Button
         type="submit"
-        className="w-full bg-blue-500 text-white py-2 px-4 rounded-md"
+        className="w-full bg-blue-500 text-white py-2 px-4 rounded-md my-3"
       >
         Login
-      </button>
+      </Button>
+      <div className="h-5">
+        {authError !== "" ? (
+          <span className="text-red-600 font-bold">{authError}</span>
+        ) : null}
+      </div>
     </form>
   );
 };

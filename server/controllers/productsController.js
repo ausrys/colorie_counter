@@ -41,7 +41,6 @@ module.exports.add_product_post = async (req, res) => {
         .status(400)
         .json({ error: "Product with this name already exists" });
   } catch (error) {
-    console.log(error);
     res.status(400).json("Something went wrong...");
   }
 };
@@ -50,7 +49,6 @@ module.exports.all_products_get = async (req, res) => {
     const all_products = await Products.findAll();
     res.status(200).json(all_products);
   } catch (error) {
-    console.log(error);
     res.status(400).json("Error");
   }
 };
@@ -67,7 +65,6 @@ module.exports.add_category_post = async (req, res) => {
       res.status(201).json("Product category added");
     } else return res.status(400).json({ error: "Category already exists" });
   } catch (error) {
-    console.log(error);
     res.status(400).json("Error");
   }
 };
@@ -79,7 +76,6 @@ module.exports.categories_get = async (req, res) => {
     });
     res.status(200).json(all_categories);
   } catch (error) {
-    console.log(error);
     res.status(400).json("Error");
   }
 };
@@ -96,7 +92,6 @@ module.exports.products_by_category_get = async (req, res) => {
     });
     res.status(200).json(all_products_by_category);
   } catch (error) {
-    console.log(error);
     res.status(400).json("Error");
   }
 };
@@ -110,7 +105,6 @@ module.exports.products_by_search = async (req, res) => {
     });
     res.status(200).json(pruducts_by_query);
   } catch (error) {
-    console.log(error);
     res.status(400).json("Error");
   }
 };

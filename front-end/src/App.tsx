@@ -1,4 +1,3 @@
-import "./App.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Route,
@@ -7,7 +6,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import { Provider } from "react-redux";
-import Products from "./pages/Product";
+import Products from "./pages/NewProduct";
 import Home from "./pages/Home";
 import MealCreate from "./pages/MealCreate";
 import Meal from "./pages/Meal";
@@ -22,13 +21,20 @@ import Register from "./pages/Register";
 import PrivateRoutes from "./components/Routes/PrivateRoutes";
 import AdminRoute from "./components/Routes/AdminRoute";
 import { categoriesLoader } from "./components/Product/categoriesLoader";
-import { mealInfoLoader, mealsLoader } from "./helper/routesLoaders";
+import {
+  adminChechLoader,
+  mealInfoLoader,
+  mealsLoader,
+} from "./helper/routesLoaders";
 import PageError from "./pages/PageError";
 function App() {
   const client = new QueryClient();
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route element={<Layout />}>
+      <Route
+        element={<Layout />}
+        errorElement={<PageError error="Page Not Found" />}
+      >
         <Route path="" element={<PrivateRoutes />}>
           <Route path="/" element={<Home />} />
           <Route path="" element={<AdminRoute />}>
@@ -36,6 +42,7 @@ function App() {
               path="/products/add"
               element={<Products />}
               loader={categoriesLoader}
+              errorElement={<PageError error="Page not found" />}
             />
           </Route>
           <Route path="/meals" element={<Meals />} loader={mealsLoader} />
@@ -65,7 +72,7 @@ function App() {
     )
   );
   return (
-    <div className="App bg-slate-100 flex-1">
+    <div className="App ">
       <Provider store={store}>
         <QueryClientProvider client={client}>
           <RouterProvider router={router} />

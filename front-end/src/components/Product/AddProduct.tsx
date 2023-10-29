@@ -7,14 +7,9 @@ import axios, { AxiosError } from "axios";
 import { newProductScheema } from "../../schemas/zodSchemas/newProduct";
 import { useLoaderData } from "react-router-dom";
 import { Category } from "../../types/productTypes";
+import { CustomError } from "../../types/errors";
 type FormData = z.infer<typeof newProductScheema>;
-interface CustomError {
-  response: {
-    data: {
-      error: string;
-    };
-  };
-}
+
 const AddProduct: React.FC = () => {
   const [prodError, setprodError] = useState<string | null>("");
   const [prodSuccess, setProdSuccess] = useState("");
@@ -52,11 +47,11 @@ const AddProduct: React.FC = () => {
   };
   return (
     <form
-      className="max-w-sm mx-auto p-4 bg-white shadow-md rounded-md"
+      className="max-w-sm mx-auto p-4 bg-white shadow-md rounded-md mt-10"
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className="mb-4">
-        <label className="block text-gray-700">Product's name</label>
+        <label className="block text-gray-700 mb-2">Product's name</label>
         <Controller
           name="title"
           control={control}
@@ -69,7 +64,7 @@ const AddProduct: React.FC = () => {
       </div>
 
       <div className="mb-4">
-        <label className="block text-gray-700">Calories</label>
+        <label className="block text-gray-700 mb-2">Calories</label>
         <Controller
           name="calories"
           control={control}
@@ -87,7 +82,7 @@ const AddProduct: React.FC = () => {
         )}
       </div>
       <div className="mb-4">
-        <label className="block text-gray-700">Protein</label>
+        <label className="block text-gray-700 mb-2">Protein</label>
         <Controller
           name="protein"
           control={control}
@@ -113,7 +108,7 @@ const AddProduct: React.FC = () => {
         {errors.carbs && <p className="text-red-500">{errors.carbs.message}</p>}
       </div>
       <div className="mb-4">
-        <label className="block text-gray-700">Category</label>
+        <label className="block text-gray-700 mb-2">Category</label>
         <Controller
           name="food_category_id"
           control={control}

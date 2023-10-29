@@ -16,3 +16,7 @@ export const returnPrecisedNumber = (number: number) =>
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+export const dateFormatter = (date: Date) => {
+  const formattedDate = new Intl.DateTimeFormat().format(date);
+  return formattedDate;
+};

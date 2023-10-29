@@ -1,16 +1,18 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { ProductType } from "../../types/productTypes";
 
+const initialProductInfoState = {
+  product_id: 0,
+  title: "",
+  calories: 0,
+  protein: 0,
+  carbs: 0,
+};
 const productInfoSlice = createSlice({
   name: "productInfo",
-  initialState: {
-    product_id: 0,
-    title: "",
-    calories: 0,
-    protein: 0,
-    carbs: 0,
-  },
+  initialState: initialProductInfoState,
   reducers: {
-    setProduct: (state, action) => {
+    setProduct: (state, action: PayloadAction<ProductType>) => {
       const { product_id, title, calories, protein, carbs } = action.payload;
       state.product_id = product_id;
       state.title = title;

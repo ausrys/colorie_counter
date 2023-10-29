@@ -16,46 +16,54 @@ const Navbar = () => {
       });
       dispatch(logOutUser());
       navigate("/login");
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
   return (
-    <nav className="bg-white text-black font-bold font-sans text-lg shadow-lg w-full relative flex flex-row items-center">
+    <nav className="bg-white text-black font-bold text-lg shadow-md w-full relative flex items-center">
       {userInfo !== null ? (
-        <>
+        <div className="flex items-center justify-between w-full px-6 py-4">
           <div>
-            <h3 className="px-7 whitespace-nowrap">
-              Hello, {userInfo.user_name}
-            </h3>
+            <h3 className="whitespace-nowrap">Hello, {userInfo.user_name}</h3>
           </div>
-          <div className="container ml-auto px-4 py-5">
-            <NavLink to={"/"}> Home </NavLink>
-            <NavLink to={"/meals"}> Meals</NavLink>
-            <NavLink to={"/statistics"}> Statistics </NavLink>
+          <div className="space-x-4">
+            <NavLink to={"/"} className="hover:underline">
+              Home
+            </NavLink>
+            <NavLink to={"/meals"} className="hover:underline">
+              Meals
+            </NavLink>
+            <NavLink to={"/statistics"} className="hover:underline">
+              Statistics
+            </NavLink>
             {userInfo.isAdmin === true ? (
-              <NavLink to={"/products/add"}> Add products </NavLink>
+              <NavLink to={"/products/add"} className="hover:underline">
+                Add products
+              </NavLink>
             ) : null}
           </div>
-          <div className="ml-auto px-7 py-5">
+          <div className="px-2">
             <Button onClick={logOutHandler}>Logout</Button>
           </div>
-        </>
+        </div>
       ) : (
-        <div className="flex flex-row justify-center px-7 py-5 w-full">
+        <div className="w-full px-6 py-4 flex items-center justify-center space-x-4">
           <NavLink
-            className={({ isActive }) =>
-              isActive ? "px-5 bg-slate-200" : "px-5"
-            }
             to={"/login"}
+            className={({ isActive }) =>
+              isActive
+                ? "bg-teal-300 px-5 py-2 rounded-full"
+                : "hover:underline"
+            }
           >
             Login
           </NavLink>
           <NavLink
-            className={({ isActive }) =>
-              isActive ? "px-5 bg-slate-200" : "px-5"
-            }
             to={"/register"}
+            className={({ isActive }) =>
+              isActive
+                ? "bg-teal-300 px-5 py-2 rounded-full"
+                : "hover:underline"
+            }
           >
             Register
           </NavLink>

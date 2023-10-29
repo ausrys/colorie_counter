@@ -1,11 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import PieChart from "../Charts/PieChart";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { RootState } from "../../types/reducersTypes";
 import { useLoaderData } from "react-router-dom";
 import { setMealInfo } from "../../reducers/mealReducers/mealInfoReducer";
 import { mealInfoData } from "../../types/mealTypes";
-import { mealInfoLoader } from "../../helper/routesLoaders";
 const MealInfo = () => {
   const data = useLoaderData() as mealInfoData;
   const dispatch = useDispatch();
@@ -17,24 +16,30 @@ const MealInfo = () => {
     (state: RootState) => state.mealInfo.mealProducts
   );
   return (
-    <div className=" flex flex-row text-center m-6 w-3/5 relative max-h-fit mx-auto ">
-      <div className="w-1/2 bg-indigo-200 mx-5 border-2 rounded-3xl border-cyan-950 flex flex-row items-center justify-center">
-        <div className="">
-          <h3 className="text-lg mb-2">Meal info: </h3>
-          <div className=" flex flex-col text-left">
+    <section className="flex flex-row my-6 h-80 w-4/5">
+      <div className="w-2/5 mr-5 rounded-lg bg-white shadow-lg">
+        <div className="p-4">
+          <h3 className="text-2xl font-semibold text-blue-800">
+            Meal Information
+          </h3>
+          <div className="flex flex-col text-left mb-2">
             {Object.entries(mealInfo).map(([key, value], mapkey) => (
-              <React.Fragment key={mapkey}>
-                <span className="flex ">
-                  <h4 className="w-20">{key}</h4>
-                  <h4>{Number((value as number).toFixed(2))}</h4>
+              <div
+                className="flex items-center justify-between border-b border-gray-300 py-2"
+                key={mapkey}
+              >
+                <strong className="text-gray-600">{key}</strong>
+                <span className="text-blue-800 text-lg font-semibold">
+                  {Number((value as number).toFixed(2))}
                 </span>
-              </React.Fragment>
+              </div>
             ))}
           </div>
         </div>
       </div>
+
       {/* Pie chart */}
-      <div className="h-full w-1/2 flex justify-center mx-5">
+      <div className="rounded-lg bg-white shadow-lg h-full w-2/5 flex justify-center ml-14 ">
         <div className="m-4">
           <PieChart
             label="of grams"
@@ -47,7 +52,7 @@ const MealInfo = () => {
           />
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

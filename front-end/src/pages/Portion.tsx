@@ -8,10 +8,6 @@ import MealTypeSelect from "../components/Meal/MealTypeSelect";
 import MealInfo from "../components/Meal/MealInfo";
 import Button from "../components/Reusable Components/Button";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setCategoriesModal,
-  setSearchModal,
-} from "../reducers/modalReducers/modalReducers";
 import ReusableModal from "../components/Modal/ReusableModal";
 import FoodCategories from "../components/Product/FoodCategories";
 import Product from "../components/Product/Product";
@@ -69,87 +65,70 @@ const Portion = () => {
     dispatch(resetMealInfo());
   };
   return (
-    <div className="flex-1">
-      <div>
-        <h2>Portion: {portion * 100}%</h2>
-        <h2>{selectedMealType}</h2>
-        <MealTypeSelect
-          selectedMealType={selectedMealType}
-          handleSelectChange={handleSelectChange}
-        />
-      </div>
-      <div className=" h-96 flex flex-row ">
+    <section className="mx-16">
+      <h1 className="text-5xl font-bold my-10">{selectedMealType}</h1>
+      <h3 className="text-xl text-right font-bold">
+        Current meal portion: {portion * 100}%
+      </h3>
+      <MealTypeSelect
+        selectedMealType={selectedMealType}
+        handleSelectChange={handleSelectChange}
+      />
+      <div className=" my-3 flex flex-row ">
         <MealInfo />
         <div className="flex flex-col items-center m-4">
-          {portion === 1 ? (
+          {portion === 1 && mealProducts.length > 0 ? (
             <>
-              <span className="text-left mb-2">Set value of the portion</span>
-              <input
-                ref={mealPortion}
-                type="number"
-                name=""
-                id=""
-                className="mb-2 border border-black rounded-md"
-              />
-              <Button
-                size={"default"}
-                onClick={() => updateValuesWithPortion()}
-              >
-                Set portion
-              </Button>
+              <span className="text-lg font-semibold text-gray-700 mb-2">
+                Set the weight of the portion:
+              </span>
+              <div className="flex flex-col items-center">
+                <input
+                  ref={mealPortion}
+                  type="number"
+                  name="portion"
+                  id="portion"
+                  className="py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-500 text-gray-700 w-full"
+                  placeholder="Enter portion value"
+                />
+                <Button
+                  size="default"
+                  className="mt-2 bg-blue-500 hover:bg-blue-600 text-white"
+                  onClick={updateValuesWithPortion}
+                >
+                  Set Portion
+                </Button>
+              </div>
             </>
-          ) : null}
+          ) : (
+            <>
+              {mealProducts.length > 0 ? (
+                <Button onClick={handleSaveMeal}>Save</Button>
+              ) : null}
+            </>
+          )}
         </div>
       </div>
       <MealProductsList isRemovable={true} title={"Added products:"} />
-      <div style={{ display: "flex", flexDirection: "row" }}>
-        {/* Portion meal */}
-        <div style={{ width: "40%", margin: "auto" }}>
-          <Button
-            size={"lg"}
-            onClick={() => dispatch(setCategoriesModal(true))}
-          >
-            Add product
-          </Button>
-          {categoriesModal === true ? (
-            <ReusableModal modalTitle="Food Categories">
-              <FoodCategories
-                setCategory_name={setCategory_name}
-                setCategory_id={setCategory_id}
-              />
-            </ReusableModal>
-          ) : null}
-          {productsModal === true ? (
-            <ReusableModal modalTitle={category_name}>
-              {category_id !== null ? (
-                <Product category_id={category_id} />
-              ) : null}
-            </ReusableModal>
-          ) : null}
-          {searchModal === true ? (
-            <ReusableModal modalTitle="Search">
-              <SearchProduct />
-              <div className="bg-gray-100 px-4 py-3">
-                <Button
-                  size="default"
-                  onClick={() => {
-                    dispatch(setSearchModal(false));
-                  }}
-                >
-                  Close
-                </Button>
-              </div>
-            </ReusableModal>
-          ) : null}
-        </div>
-      </div>
-      <div>{portion < 1 ? <div></div> : null}</div>
-      {portion !== 1 ? (
-        <div>
-          <Button onClick={() => handleSaveMeal()}>Save the meal</Button>
-        </div>
+      {categoriesModal === true ? (
+        <ReusableModal modalTitle="Food Categories">
+          <FoodCategories
+            setCategory_name={setCategory_name}
+            setCategory_id={setCategory_id}
+          />
+        </ReusableModal>
       ) : null}
-    </div>
+      {productsModal === true ? (
+        <ReusableModal modalTitle={category_name}>
+          {category_id !== null ? <Product category_id={category_id} /> : null}
+        </ReusableModal>
+      ) : null}
+      {searchModal === true ? (
+        <ReusableModal modalTitle="Search">
+          <SearchProduct />
+        </ReusableModal>
+      ) : null}
+    </section>
   );
 };
 

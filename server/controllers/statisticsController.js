@@ -57,7 +57,6 @@ module.exports.get_currentWeek_meals = async (req, res) => {
     }
     res.status(200).json({ CaloriesSumForEachWeekDay, weekNutrition });
   } catch (error) {
-    console.log(error);
     res.status(400).json(error);
   }
 };
@@ -66,7 +65,7 @@ module.exports.get_test_meals = async (req, res) => {
   const endDate = req.query.endDate;
   if (
     DateTime.fromISO(startDate).invalidExplanation ||
-    DateTime.fromISO(startDate).invalidExplanation
+    DateTime.fromISO(endDate).invalidExplanation
   )
     return res
       .status(400)
@@ -74,11 +73,13 @@ module.exports.get_test_meals = async (req, res) => {
   if (!startDate && !endDate)
     return res.status(400).json("No dates were provided");
   const monthDays = {};
+  const luxonStartDate = DateTime.fromISO(startDate);
+  const luxonEndDate = DateTime.fromISO(endDate);
   try {
     const mealsByInterval = await Meals.findAll({
       where: {
         createdAt: {
-          [Op.between]: [startDate, endDate],
+          [Op.between]: [luxonStartDate.toISO(), luxonEndDate.toISO()],
         },
         isPortion: 1,
         user_id: req.token.userId,
@@ -106,7 +107,6 @@ module.exports.get_test_meals = async (req, res) => {
     }
     res.status(200).json(CaloriesSumForEachDay);
   } catch (error) {
-    console.log(error);
     res.status(400).json(error);
   }
 };

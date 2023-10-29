@@ -3,6 +3,8 @@ const { DateTime } = require("luxon");
 // Create a meal
 module.exports.create_meal_post = async (req, res) => {
   const { prods, createdAt, ...rest } = req.body;
+  if (prods.length < 1)
+    return res.status(400).json({ error: "At least one product is required" });
   const luxonDate = DateTime.fromISO(createdAt);
   if (luxonDate.invalidExplanation)
     return res.status(400).json({ error: luxonDate.invalidExplanation });
@@ -33,7 +35,6 @@ module.exports.create_meal_post = async (req, res) => {
     });
     res.status(201).json("Meal was created successfuly!");
   } catch (error) {
-    console.log(error);
     res.status(400).json(error);
   }
 };
@@ -48,7 +49,6 @@ module.exports.all_meals_get = async (req, res) => {
 
     res.status(200).json(all_meals);
   } catch (error) {
-    console.log(error);
     res.status(400).json("Error");
   }
 };
@@ -59,7 +59,7 @@ module.exports.meal_page_get = async (req, res) => {
   try {
     const meal = await Meals.findOne({
       where: { meal_id: meal_id, user_id: req.token.userId },
-      attributes: { exclude: ["meal_id"] },
+
       include: [
         {
           model: Products,
@@ -89,9 +89,9 @@ module.exports.meal_page_get = async (req, res) => {
       weight,
       isPortion,
       prodsInfo,
+      meal_id,
     });
   } catch (error) {
-    console.log(error);
     res.status(400).json("Error");
   }
 };
