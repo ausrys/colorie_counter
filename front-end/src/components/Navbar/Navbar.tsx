@@ -13,6 +13,7 @@ const Navbar = () => {
     try {
       await axios.post(`${import.meta.env.VITE_BACKEND_URL}/logout`, {
         withCredentials: true,
+        preflightContinue: true,
       });
       dispatch(logOutUser());
       navigate("/login");
