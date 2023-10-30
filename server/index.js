@@ -11,6 +11,7 @@ app.use(
         ? "https://colorie-counter.vercel.app"
         : "http://127.0.0.1:5173",
     credentials: true,
+    preflightContinue: true,
   })
 );
 
