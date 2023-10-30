@@ -6,7 +6,10 @@ const cors = require("cors");
 
 app.use(
   cors({
-    origin: "http://127.0.0.1:5173",
+    origin:
+      process.env.NODE_ENV === "production"
+        ? "https://caloriecounter.cyclic.app/"
+        : "http://127.0.0.1:5173",
     credentials: true,
   })
 );
