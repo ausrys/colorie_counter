@@ -9,7 +9,7 @@ const db = {};
 let sequelize;
 if (process.env.NODE_ENV === "production") {
   sequelize = new Sequelize(
-    `mysql://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}:7999/${process.env.DB_NAME}`
+    `mysql://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}:3306/${process.env.DB_NAME}`
   );
 } else {
   sequelize = new Sequelize({
