@@ -3,6 +3,7 @@ const { DateTime } = require("luxon");
 // Create a meal
 module.exports.create_meal_post = async (req, res) => {
   const { prods, createdAt, ...rest } = req.body;
+  console.log(req.body);
   if (prods.length < 1)
     return res.status(400).json({ error: "At least one product is required" });
   const luxonDate = DateTime.fromISO(createdAt);
