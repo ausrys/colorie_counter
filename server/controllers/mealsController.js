@@ -3,13 +3,14 @@ const { DateTime } = require("luxon");
 // Create a meal
 module.exports.create_meal_post = async (req, res) => {
   const { prods, createdAt, ...rest } = req.body;
-  console.log(createdAt);
   if (prods.length < 1)
     return res.status(400).json({ error: "At least one product is required" });
   const luxonDate = DateTime.fromISO(createdAt);
+  console.log(luxonDate);
   if (luxonDate.invalidExplanation)
     return res.status(400).json({ error: luxonDate.invalidExplanation });
   const normalizedDate = luxonDate.toISO();
+  console.log("Normalized ", normalizedDate);
   try {
     await sequelize.transaction(async (t) => {
       const meal = await Meals.create(
