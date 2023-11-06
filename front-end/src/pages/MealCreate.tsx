@@ -42,9 +42,9 @@ const MealCreate = () => {
         fullMeal
       );
     },
-    onSuccess: () => {
-      navigate(`/meals`);
-    },
+    // onSuccess: () => {
+    //   navigate(`/meals`);
+    // },
     onError: (error: CustomError) => {
       if (error?.response?.data?.error)
         window.alert(error?.response?.data?.error);
@@ -55,6 +55,7 @@ const MealCreate = () => {
   }, []);
   const handleSaveMeal = () => {
     const currentDate = new Date();
+    console.log(currentDate);
     postMealWithProducts.mutate({
       ...mealInfo,
       prods: mealProducts,
