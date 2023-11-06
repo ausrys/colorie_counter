@@ -7,7 +7,7 @@ const basename = path.basename(__filename);
 const db = {};
 
 let sequelize;
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV == "production") {
   sequelize = new Sequelize(
     `mysql://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}:3306/${process.env.DB_NAME}`
   );

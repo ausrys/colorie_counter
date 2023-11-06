@@ -22,7 +22,7 @@ const db = require("./models");
 const rootRouter = require("./routes/rootRouter");
 const oldRecordsRemoval = require("./cron/cronjobs");
 app.use(rootRouter);
-db.sequelize.sync({ alter: true }).then(() => {
+db.sequelize.sync().then(() => {
   app.listen(process.env.PORT || 5000);
   oldRecordsRemoval();
 });
