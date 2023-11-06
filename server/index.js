@@ -23,6 +23,6 @@ const rootRouter = require("./routes/rootRouter");
 const oldRecordsRemoval = require("./cron/cronjobs");
 app.use(rootRouter);
 db.sequelize.sync().then(() => {
-  app.listen(process.env.PORT || 5000);
+  app.listen(process.env.PORT || 3000);
   oldRecordsRemoval();
 });
