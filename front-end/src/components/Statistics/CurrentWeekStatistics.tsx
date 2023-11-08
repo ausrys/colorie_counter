@@ -31,11 +31,13 @@ const CurrentWeekStatistics = () => {
 export default CurrentWeekStatistics;
 // Current Week's Statistics
 export const CWSLoader = async () => {
-  const currentDate = new Date().toISOString();
+  const currentDate = new Date();
+  const userTimezone = currentDate.getTimezoneOffset();
   const response = await axios.post(
     rootAdress.concat("/statistics/currentWeek"),
     {
-      currentDate: currentDate,
+      currentDate,
+      userTimezone,
     },
     { withCredentials: true }
   );

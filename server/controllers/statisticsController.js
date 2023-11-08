@@ -3,10 +3,10 @@ const { Op } = require("sequelize");
 const { DateTime } = require("luxon");
 // Get current week's meals
 module.exports.get_currentWeek_meals = async (req, res) => {
-  const { currentDate } = req.body;
+  const { currentDate, userTimezone } = req.body;
   // Converting the date to luxon object so that it could be modified easier
 
-  const luxonDate = DateTime.fromISO(currentDate);
+  const luxonDate = DateTime.fromISO(currentDate, { zone: userTimezone * -1 });
   // Checking if the date is valid
   if (luxonDate.invalidExplanation)
     return res.status(400).json({ error: luxonDate.invalidExplanation });
@@ -63,6 +63,7 @@ module.exports.get_currentWeek_meals = async (req, res) => {
 module.exports.get_test_meals = async (req, res) => {
   const startDate = req.query.startDate;
   const endDate = req.query.endDate;
+  const userTimezone = req.query.userTimezone;
   if (
     DateTime.fromISO(startDate).invalidExplanation ||
     DateTime.fromISO(endDate).invalidExplanation
@@ -73,8 +74,10 @@ module.exports.get_test_meals = async (req, res) => {
   if (!startDate && !endDate)
     return res.status(400).json("No dates were provided");
   const monthDays = {};
-  const luxonStartDate = DateTime.fromISO(startDate);
-  const luxonEndDate = DateTime.fromISO(endDate);
+  const luxonStartDate = DateTime.fromISO(startDate, {
+    zone: userTimezone * -1,
+  });
+  const luxonEndDate = DateTime.fromISO(endDate, { zone: userTimezone * -1 });
   try {
     const mealsByInterval = await Meals.findAll({
       where: {

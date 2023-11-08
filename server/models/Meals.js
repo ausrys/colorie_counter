@@ -1,4 +1,3 @@
-const { DateTime } = require("luxon");
 module.exports = (sequelize, DataTypes) => {
   const Meals = sequelize.define(
     "Meals",

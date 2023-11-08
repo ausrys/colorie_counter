@@ -2,15 +2,13 @@ const { Meals, MealProducts, Products, sequelize } = require("../models");
 const { DateTime } = require("luxon");
 // Create a meal
 module.exports.create_meal_post = async (req, res) => {
-  const { prods, createdAt, ...rest } = req.body;
+  const { prods, createdAt, userTimezone, ...rest } = req.body;
   if (prods.length < 1)
     return res.status(400).json({ error: "At least one product is required" });
-  const luxonDate = DateTime.fromISO(createdAt, { setZone: true });
-  console.log(luxonDate);
+  const luxonDate = DateTime.fromISO(createdAt, { zone: userTimezone * -1 });
   if (luxonDate.invalidExplanation)
     return res.status(400).json({ error: luxonDate.invalidExplanation });
   const normalizedDate = luxonDate.toISO();
-  console.log("Normalized ", normalizedDate);
   try {
     await sequelize.transaction(async (t) => {
       const meal = await Meals.create(

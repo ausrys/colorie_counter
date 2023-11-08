@@ -23,7 +23,7 @@ const Statistics = () => {
         const response = await axios.get(
           `${
             import.meta.env.VITE_BACKEND_URL
-          }/statistics/test?startDate=${startDate}&endDate=${endDate}`,
+          }/statistics/test?startDate=${startDate}&endDate=${endDate}&userTimezone=${now.getTimezoneOffset()}`,
           { withCredentials: true }
         );
         setFetchedData(response.data);

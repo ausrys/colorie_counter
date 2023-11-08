@@ -55,12 +55,14 @@ const MealCreate = () => {
   }, []);
   const handleSaveMeal = () => {
     const currentDate = new Date();
+    const userTimezone = currentDate.getTimezoneOffset();
     postMealWithProducts.mutate({
       ...mealInfo,
       prods: mealProducts,
       title: selectedMealType,
       isPortion: isPortion,
       createdAt: currentDate,
+      userTimezone: userTimezone,
     });
     setIsPortion(0);
     dispatch(resetMealInfo());

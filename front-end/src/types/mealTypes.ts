@@ -13,4 +13,5 @@ export type TmealCreate = MealInfoType & {
   title: MealType;
   isPortion: 0 | 1;
   createdAt: Date;
+  userTimezone: number;
 };
